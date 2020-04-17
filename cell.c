@@ -109,9 +109,10 @@ void applyConditionsToCell(Cell* cell, Condition* condition){
 }
 
 void tryInfectCell(Cell* cell, Condition* condition){
-	double susceptibility = max(condition->infection_probabilty, 1) * RAND_MAX;
+	double infection_probabilty = condition->infection_probabilty;
+	double susceptibility = min(infection_probabilty, 1) * RAND_MAX;
 	double susception_event = rand();
-	if (susception_event > susceptibility){
+	if (susception_event < susceptibility){
 		*cell = infected;
 	}
 }
