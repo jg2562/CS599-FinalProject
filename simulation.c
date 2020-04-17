@@ -61,7 +61,7 @@ void simulateCells(Model *model, CellMap *next_map) {
 
 	int width = parameters->model_width;
 	int height = parameters->model_height;
-	int position[2];
+	int position[2] = {-1,-1};
 
 	for (int row = 0; row < height; row++) {
 		position[1] = row;
@@ -76,6 +76,31 @@ void simulateCells(Model *model, CellMap *next_map) {
 void simulateCell(Model* model, CellMap* next_map, int position[2]){
 	int x = position[0];
 	int y = position[1];
-	printf("simulating %d,%d!\n", x, y);
 
+
+	int min[2] = {-1,-1};
+	int max[2] = {-1,-1};
+
+
+	Cell* cell = &model->map[y][x];
+	double radius = getEffectRadius(cell, model->parameters);
+
+	getBounds(min,max,radius,position);
+
+	applyCellEffect();
+
+}
+
+void getBounds(int min[2], int max[2], Model* model, int position[2]){
+
+
+
+}
+
+
+void applyCellEffect(void (*effect)(Parameters*,Cell*), CellMap* next_map, int min[2], int max[2]){
+	for (int row = min[1]; row < max[1]; row++) {
+		for (int col = min[0]; col < max[0]; col++) {
+		}
+	}
 }
