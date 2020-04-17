@@ -5,6 +5,7 @@
 #include <math.h>
 #include <string.h>
 
+#include "utils.h"
 #include "cellMap.h"
 
 //function prototypes
@@ -79,6 +80,8 @@ Parameters* importParameters(const char* fname){
 int extractParameterData(char** parameter_name, char** parameter_value, char* parameter_line){
 	*parameter_name = strtok(parameter_line, ":");
 	*parameter_value = strtok(NULL, ":");
+	lowerCaseString(*parameter_name);
+	lowerCaseString(*parameter_value);
 
 	if (*parameter_value == NULL){
 		return 0;
@@ -87,25 +90,25 @@ int extractParameterData(char** parameter_name, char** parameter_value, char* pa
 }
 
 int parseParameter(Parameters* parameter, const char* parameter_name, const char* parameter_value){
-	if (strcmp("Spread rate",parameter_name) == 0){
+	if (strcmp("spread rate",parameter_name) == 0){
 		parameter->spread_rate = parseDouble(parameter_value);
 
-	} else if(strcmp("Spread radius", parameter_name) == 0){
+	} else if(strcmp("spread radius", parameter_name) == 0){
 		parameter->spread_radius = parseDouble(parameter_value);
 
-	} else if(strcmp("Recovery rate", parameter_name) == 0){
+	} else if(strcmp("recovery rate", parameter_name) == 0){
 		parameter->recovery_rate = parseDouble(parameter_value);
 
-	} else if(strcmp("Model height", parameter_name) == 0){
+	} else if(strcmp("model height", parameter_name) == 0){
 		parameter->model_height = parseInt(parameter_value);
 
-	} else if(strcmp("Model width", parameter_name) == 0){
+	} else if(strcmp("model width", parameter_name) == 0){
 		parameter->model_width = parseInt(parameter_value);
 
-	} else if(strcmp("Seed", parameter_name) == 0){
+	} else if(strcmp("seed", parameter_name) == 0){
 		parameter->seed = parseInt(parameter_value);
 
-	} else if(strcmp("Simulation Iterations", parameter_name) == 0){
+	} else if(strcmp("simulation iterations", parameter_name) == 0){
 		parameter->simulation_iterations = parseInt(parameter_value);
 
 	} else {

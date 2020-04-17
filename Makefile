@@ -13,15 +13,16 @@ LDLIBS=-lm
 
 all: $(OUTPUT)
 
-$(OUTPUT): main.o simulation.o parser.o model.o parameters.o cellMap.o cell.o
+$(OUTPUT): main.o simulation.o parser.o model.o parameters.o cellMap.o cell.o utils.o
 
 main.o: simulation.o
 simulation.o: parser.h model.h
-parser.o: parser.h model.h parameters.h cellMap.h
+parser.o: parser.h model.h parameters.h cellMap.h utils.h
 model.o: model.h parameters.h cellMap.h
 parameters.o: parameters.h
 cellMap.o: cellMap.h cell.h
 cell.o: cell.h
+utils.o: utils.h
 
 
 clean:
