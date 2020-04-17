@@ -26,19 +26,11 @@ void testSimulation(const char* parameter_file, const char* map_file){
 		exit(1);
 	}
 
-	int width = model->parameters->model_width;
-	int height = model->parameters->model_height;
-
-	printParameters(model->parameters);
-	printf("\n");
-	printCellMap(model->map, width, height);
+	printModel(model);
 
 	runSimulation(model);
 
-	printf("\n");
-	printCellMap(model->map, width, height);
-	printf("\n");
-	printPopulation(model->population);
+	printModel(model);
 
 	freeModel(model);
 

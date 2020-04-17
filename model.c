@@ -23,3 +23,15 @@ void freeModel(Model* model){
 	freePopulation(model->population);
 	free(model);
 }
+
+void printModel(Model* model){
+	int width = model->parameters->model_width;
+	int height = model->parameters->model_height;
+
+	printParameters(model->parameters);
+	printf("\n");
+	printCellMap(model->map, width, height);
+	printf("\n");
+	printPopulation(model->population);
+
+}
