@@ -87,6 +87,11 @@ void spreadCellCondition(Model* model, ConditionMap* condition_map,  int positio
 
 
 	Cell* cell = &model->map[y][x];
+
+	if (!cellHasEffect(cell)){
+		return;
+	}
+
 	double radius = getEffectRadius(cell, parameters);
 
 	getBounds(min_index,max_index,radius,position, size);

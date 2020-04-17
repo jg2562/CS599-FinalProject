@@ -10,6 +10,8 @@ Cell charToCell(char c);
 char cellToChar(Cell cell);
 
 Cell createCell();
+
+int cellHasEffect(Cell* cell);
 double getEffectRadius(Cell* cell, Parameters* parameters);
 void applyCellEffect(Cell* cell, Cell* target, Parameters* parameters, Condition* target_condition);
 void applyConditionsToCell(Cell* cell, Condition* condition);

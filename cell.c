@@ -81,6 +81,16 @@ double getEffectRadius(Cell* cell, Parameters* parameters){
 	return 0;
 }
 
+int cellHasEffect(Cell* cell){
+	switch(*cell){
+	case infected:
+		return 1;
+	default:
+		return 0;
+	}
+	return 0;
+}
+
 void applyCellEffect(Cell* cell, Cell* target, Parameters* parameters, Condition* target_condition){
 	switch(*cell){
 	case infected:
