@@ -15,5 +15,6 @@ void applyCellEffect(Cell* cell, Cell* target, Parameters* parameters, Condition
 void applyConditionsToCell(Cell* cell, Condition* condition);
 
 int isInfected(Cell* cell);
+int isCreature(Cell* cell);
 
 #endif /* CELL_H */

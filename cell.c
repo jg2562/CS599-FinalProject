@@ -120,3 +120,19 @@ void tryInfectCell(Cell* cell, Condition* condition){
 int isInfected(Cell* cell){
 	return *cell == infected;
 }
+
+int isCreature(Cell* cell){
+	switch(*cell){
+	case infected:
+	case susceptible:
+	case dead:
+	case immune:
+		return 1;
+	case mountain:
+	case store:
+	case empty:
+	default:
+		return 0;
+	}
+	return 0;
+}
