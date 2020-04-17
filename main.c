@@ -8,6 +8,7 @@ void testSimulation(const char* parameter_file, const char* map_file);
 void animateSimulation(const char* parameter_file, const char* map_file);
 void runFullSimulation(const char* parameter_file, const char* map_file);
 void clearAndPrintModel(Model* model);
+void usleep(unsigned int);
 
 int main(int argc, char** argv){
 	if (argc != 4){
@@ -63,13 +64,15 @@ void animateSimulation(const char* parameter_file, const char* map_file){
 }
 
 void clearAndPrintModel(Model* model){
+	unsigned int usecs = 100000;
+
 	for(int i = 0; i < 100; i++){
 		printf("\n");
 	}
 
 	printModel(model);
 
-	usleep(100000);
+	usleep(usecs);
 }
 
 Model* loadModel(const char* parameter_file, const char* map_file){
