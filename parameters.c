@@ -47,3 +47,11 @@ int checkParameters(Parameters* parameters){
 void freeParameters(Parameters* parameters){
 	free(parameters);
 }
+
+void printParameters(Parameters* parameters){
+	printf("Spread rate: %lf\n", parameters->spread_rate);
+	printf("Recovery rate: %lf\n", parameters->recovery_rate);
+	printf("Model height: %d\n", parameters->model_height);
+	printf("Model width: %d\n", parameters->model_width);
+	printf("Seed: %d\n", parameters->seed);
+}
