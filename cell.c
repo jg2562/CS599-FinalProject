@@ -1,5 +1,9 @@
 #include "cell.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include "parameters.h"
+#include "condition.h"
+#include "utils.h"
 
 #define EMPTY_CHAR '_'
 #define INFECTED_CHAR 'I'
@@ -9,6 +13,13 @@
 #define MOUNTAIN_CHAR 'M'
 #define STORE_CHAR '@'
 #define DEFAULT_CHAR '?'
+
+void transmissionEffect(Cell* target, Parameters* parameters, Condition* target_condition);
+void tryInfectCell(Cell* cell, Condition* condition);
+
+Cell createCell(){
+	return unknown;
+}
 
 Cell charToCell(const char c){
 	switch (c){
@@ -70,6 +81,41 @@ double getEffectRadius(Cell* cell, Parameters* parameters){
 	return 0;
 }
 
-Cell createCell(){
-	return unknown;
+void applyCellEffect(Cell* cell, Cell* target, Parameters* parameters, Condition* target_condition){
+	switch(*cell){
+	case infected:
+		transmissionEffect(target,parameters,target_condition);
+		break;
+	default:
+		break;
+	}
+
+}
+
+void transmissionEffect(Cell* target, Parameters* parameters, Condition* target_condition){
+	if (*target == susceptible){
+		target_condition->infection_probabilty += parameters->spread_rate*0.01;
+	}
+}
+
+void applyConditionsToCell(Cell* cell, Condition* condition){
+	switch(*cell){
+	case susceptible:
+		tryInfectCell(cell, condition);
+		break;
+	default:
+		break;
+	}
+}
+
+void tryInfectCell(Cell* cell, Condition* condition){
+	double susceptibility = max(condition->infection_probabilty, 1) * RAND_MAX;
+	double susception_event = rand();
+	if (susception_event > susceptibility){
+		*cell = infected;
+	}
+}
+
+int isInfected(Cell* cell){
+	return *cell == infected;
 }

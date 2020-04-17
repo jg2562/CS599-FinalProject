@@ -3,11 +3,13 @@
 
 #include "parameters.h"
 #include "cellMap.h"
+#include "population.h"
 
 // Holds all data related to the simulation model
 typedef struct Model{
 	CellMap* map;
 	Parameters* parameters;
+	Population* population;
 } Model;
 
 Model* createModel();

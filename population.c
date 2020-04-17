@@ -21,3 +21,8 @@ void initializePopulation(Population* population){
 	population->dead = 0;
 	population->immune = 0;
 }
+
+void pollCell(Population* population, Cell* cell){
+	population->susceptible += !isInfected(cell);
+	population->infected += isInfected(cell);
+}

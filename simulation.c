@@ -3,10 +3,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "conditionMap.h"
+#include "condition.h"
+#include "utils.h"
+#include "cell.h"
 
 void stepSimulation(Model* model);
-void simulateCells(Model *model, CellMap *next_map);
-void simulateCell(Model* model, CellMap* next_map, int position[2]);
+void simulateCells(Model *model, ConditionMap* conditions);
+void simulateCell(Model* model, ConditionMap* conditions, int position[2]);
+
+void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]);
+void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int min_index[2], int max_index[2]);
+void spreadCellCondition(Model* model, ConditionMap* condition_map,  int position[2]);
+void getCellsConditions(Model *model, ConditionMap* condition_map);
 
 void testSimulation(const char* parameter_file, const char* map_file){
 
@@ -22,10 +31,15 @@ void testSimulation(const char* parameter_file, const char* map_file){
 	printParameters(model->parameters);
 	printf("\n");
 	printCellMap(model->map, width, height);
+
+	runSimulation(model);
+
+	printf("\n");
+	printCellMap(model->map, width, height);
+
 	freeModel(model);
 
 }
-
 
 void runSimulation(Model* model){
 
@@ -44,19 +58,17 @@ void stepSimulation(Model* model){
 	int width = parameters->model_width;
 	int height = parameters->model_height;
 
-	CellMap* next_map = createCellMap(width, height);
+	ConditionMap* conditions = createConditionMap(width, height);
 
-	simulateCells(model, next_map);
+	getCellsConditions(model, conditions);
 
-	CellMap* previous_map = model->map;
+	simulateCells(model, conditions);
 
-	model->map = next_map;
-
-	freeCellMap(previous_map, height);
+	freeConditionMap(conditions, height);
 
 }
 
-void simulateCells(Model *model, CellMap *next_map) {
+void getCellsConditions(Model *model, ConditionMap* condition_map) {
 	Parameters *parameters = model->parameters;
 
 	int width = parameters->model_width;
@@ -68,39 +80,83 @@ void simulateCells(Model *model, CellMap *next_map) {
 		for (int col = 0; col < width; col++) {
 			position[0] = col;
 
-			simulateCell(model, next_map, position);
+			spreadCellCondition(model, condition_map, position);
 		}
 	}
 }
 
-void simulateCell(Model* model, CellMap* next_map, int position[2]){
+void spreadCellCondition(Model* model, ConditionMap* condition_map,  int position[2]){
 	int x = position[0];
 	int y = position[1];
 
 
-	int min[2] = {-1,-1};
-	int max[2] = {-1,-1};
+	Parameters* parameters = model->parameters;
+	int min_index[2] = {-1,-1};
+	int max_index[2] = {-1,-1};
+	int size[2] = {parameters->model_width,parameters->model_height};
 
 
 	Cell* cell = &model->map[y][x];
-	double radius = getEffectRadius(cell, model->parameters);
+	double radius = getEffectRadius(cell, parameters);
 
-	getBounds(min,max,radius,position);
+	getBounds(min_index,max_index,radius,position, size);
 
-	applyCellEffect();
-
-}
-
-void getBounds(int min[2], int max[2], Model* model, int position[2]){
-
-
+	applyEffect(model, condition_map, cell, min_index, max_index);
 
 }
 
+void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]){
 
-void applyCellEffect(void (*effect)(Parameters*,Cell*), CellMap* next_map, int min[2], int max[2]){
-	for (int row = min[1]; row < max[1]; row++) {
-		for (int col = min[0]; col < max[0]; col++) {
+	min_index[0] = max(position[0] - radius, 0);
+	min_index[1] = max(position[1] - radius, 0);
+
+	max_index[0] = min(position[0] + radius, size[0]);
+	max_index[1] = min(position[1] + radius, size[1]);
+
+}
+
+void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int min_index[2], int max_index[2]){
+
+	Parameters* parameters = model->parameters;
+	CellMap* map = model->map;
+
+	for (int row = min_index[1]; row < max_index[1]; row++) {
+		for (int col = min_index[0]; col < max_index[0]; col++) {
+			Cell* target = &map[row][col];
+			Condition* target_conditions = &condition_map[row][col];
+
+			applyCellEffect(current, target, parameters, target_conditions);
 		}
 	}
 }
+
+void simulateCells(Model *model, ConditionMap* conditions) {
+
+	initializePopulation(model->population);
+	Parameters *parameters = model->parameters;
+
+	int width = parameters->model_width;
+	int height = parameters->model_height;
+	int position[2] = {-1,-1};
+
+	for (int row = 0; row < height; row++) {
+		position[1] = row;
+		for (int col = 0; col < width; col++) {
+			position[0] = col;
+
+			simulateCell(model, conditions, position);
+		}
+	}
+}
+
+void simulateCell(Model* model, ConditionMap* conditions, int position[2]){
+	int x = position[0];
+	int y = position[1];
+	Cell* current = &model->map[y][x];
+	Condition* condition = &conditions[y][x];
+
+	applyConditionsToCell(current, condition);
+
+	pollCell(model->population, current);
+}
+

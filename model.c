@@ -9,6 +9,7 @@ Model* createModel(){
 	Model* model = malloc(sizeof(*model));
 	model->map = NULL;
 	model->parameters = NULL;
+	model->population = createPopulation();
 	return model;
 }
 
@@ -20,6 +21,7 @@ void freeModel(Model* model){
 
 	freeMap(model);
 	freeParameters(model->parameters);
+	freePopulation(model->population);
 	free(model);
 }
 
