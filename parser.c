@@ -90,6 +90,9 @@ int parseParameter(Parameters* parameter, const char* parameter_name, const char
 	if (strcmp("Spread rate",parameter_name) == 0){
 		parameter->spread_rate = parseDouble(parameter_value);
 
+	} else if(strcmp("Spread radius", parameter_name) == 0){
+		parameter->spread_radius = parseDouble(parameter_value);
+
 	} else if(strcmp("Recovery rate", parameter_name) == 0){
 		parameter->recovery_rate = parseDouble(parameter_value);
 
@@ -101,6 +104,10 @@ int parseParameter(Parameters* parameter, const char* parameter_name, const char
 
 	} else if(strcmp("Seed", parameter_name) == 0){
 		parameter->seed = parseInt(parameter_value);
+
+	} else if(strcmp("Simulation Iterations", parameter_name) == 0){
+		parameter->simulation_iterations = parseInt(parameter_value);
+
 	} else {
 		fprintf(stderr,"Unrecognized parameter: %s\n", parameter_name);
 		return 0;

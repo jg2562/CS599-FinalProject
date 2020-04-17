@@ -3,10 +3,13 @@
 
 typedef struct Parameters {
 	double spread_rate;
+	double spread_radius;
 	double recovery_rate;
 	int model_height;
 	int model_width;
 	int seed;
+	int simulation_iterations;
+
 } Parameters;
 
 
