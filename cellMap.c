@@ -7,7 +7,7 @@ CellMap* createCellMap(int width, int height){
 	for (int i = 0; i < height; i++){
 		map[i] = malloc(sizeof(**map) * width);
 		for (int j = 0; j < width; j++){
-			map[i][j] = unknown;
+			map[i][j] = createCell();
 		}
 	}
 	return map;

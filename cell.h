@@ -8,6 +8,7 @@ typedef enum Cell{unknown,empty,infected,susceptible,dead,immune,mountain,store}
 Cell charToCell(char c);
 char cellToChar(Cell cell);
 
+Cell createCell();
 double getEffectRadius(Cell* cell, Parameters* parameters);
 
 #endif /* CELL_H */

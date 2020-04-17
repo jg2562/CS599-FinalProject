@@ -69,3 +69,7 @@ double getEffectRadius(Cell* cell, Parameters* parameters){
 	}
 	return 0;
 }
+
+Cell createCell(){
+	return unknown;
+}
