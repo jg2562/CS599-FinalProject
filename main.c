@@ -31,7 +31,7 @@ int main(int argc, char** argv){
 	} else {
 		// Report an invalid flag
 		fprintf(stderr, "Invalid operation mode: %s\n\n", argv[1]);
-		fprintf(stderr, "Valid operation modes: animate,test\n");
+		fprintf(stderr, "Valid operation modes: run,animate,test\n");
 		exit(-1);
 	}
 
