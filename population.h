@@ -8,4 +8,9 @@ typedef struct Population{
 	int immune;
 } Population;
 
+Population* createPopulation();
+void freePopulation(Population* population);
+void initializePopulation(Population* population);
+
+
 #endif /* POPULATION_H */
