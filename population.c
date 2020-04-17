@@ -23,7 +23,7 @@ void initializePopulation(Population* population){
 }
 
 void pollCell(Population* population, Cell* cell){
-	population->susceptible += !isInfected(cell);
+	population->susceptible += !isInfected(cell) && isCreature(cell);
 	population->infected += isInfected(cell);
 }
 
