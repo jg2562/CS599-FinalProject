@@ -44,6 +44,7 @@ void testSimulation(const char* parameter_file, const char* map_file){
 }
 
 void runSimulation(Model* model){
+	srand(model->parameters->seed);
 
 	int iterations = model->parameters->simulation_iterations;
 
