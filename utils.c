@@ -1,7 +1,11 @@
 #include "utils.h"
+#include <stdlib.h>
 #include <ctype.h>
 
 void lowerCaseString(char* str){
+	if (str == NULL){
+		return;
+	}
 
 	int i = 0;
 	while (str[i]){
