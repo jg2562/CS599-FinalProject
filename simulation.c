@@ -112,8 +112,8 @@ void getBounds(int min_index[2], int max_index[2], double radius, int position[2
 	min_index[0] = max(position[0] - radius, 0);
 	min_index[1] = max(position[1] - radius, 0);
 
-	max_index[0] = min(position[0] + radius, size[0]);
-	max_index[1] = min(position[1] + radius, size[1]);
+	max_index[0] = min(position[0] + radius+1, size[0]);
+	max_index[1] = min(position[1] + radius+1, size[1]);
 
 }
 
