@@ -6,5 +6,6 @@
 
 void testSimulation(const char* parameter_file, const char* map_file);
 void runSimulation(Model* model);
+void runSimulationIterator(Model* model, void(*iteratorFunction) (Model*));
 
 #endif /* SIMULATION_H */

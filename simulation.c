@@ -11,6 +11,7 @@
 void stepSimulation(Model* model);
 void simulateCells(Model *model, ConditionMap* conditions);
 void simulateCell(Model* model, Cell* current, Condition* condition);
+void runIterationFunction(Model* model, void(*iterationFunction) (Model*));
 
 void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]);
 void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int min_index[2], int max_index[2]);
@@ -44,14 +45,26 @@ void testSimulation(const char* parameter_file, const char* map_file){
 }
 
 void runSimulation(Model* model){
+	runSimulationIterator(model, NULL);
+}
+
+void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
 	srand(model->parameters->seed);
 
 	int iterations = model->parameters->simulation_iterations;
 
+	runIterationFunction(model, iterationFunction);
 	for (int i = 0; i < iterations; i++){
 		stepSimulation(model);
+		runIterationFunction(model, iterationFunction);
 	}
 
+}
+
+void runIterationFunction(Model* model, void(*iterationFunction) (Model*)){
+	if (iterationFunction != NULL){
+		iterationFunction(model);
+	}
 }
 
 void stepSimulation(Model* model){
