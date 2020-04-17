@@ -3,6 +3,8 @@
 #include  <stdio.h>
 #include "simulation.h"
 
+void testSimulation(const char* parameter_file, const char* map_file);
+
 int main(int argc, char** argv){
 	if (argc != 3){
 		fprintf(stderr, "===========================\n");
@@ -14,4 +16,23 @@ int main(int argc, char** argv){
 	testSimulation(argv[1], argv[2]);
 
 	exit(0);
+}
+
+
+void testSimulation(const char* parameter_file, const char* map_file){
+
+	Model* model = importModel(parameter_file, map_file);
+	if (model == NULL){
+		fprintf(stderr, "Failed to import model.\n");
+		exit(1);
+	}
+
+	printModel(model);
+
+	runSimulation(model);
+
+	printModel(model);
+
+	freeModel(model);
+
 }

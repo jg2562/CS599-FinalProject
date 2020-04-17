@@ -18,24 +18,6 @@ void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int m
 void spreadCellCondition(Model* model, ConditionMap* condition_map,  int position[2]);
 void getCellsConditions(Model *model, ConditionMap* condition_map);
 
-void testSimulation(const char* parameter_file, const char* map_file){
-
-	Model* model = importModel(parameter_file, map_file);
-	if (model == NULL){
-		fprintf(stderr, "Failed to import model.\n");
-		exit(1);
-	}
-
-	printModel(model);
-
-	runSimulation(model);
-
-	printModel(model);
-
-	freeModel(model);
-
-}
-
 void runSimulation(Model* model){
 	runSimulationIterator(model, NULL);
 }
