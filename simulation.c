@@ -15,6 +15,8 @@ void testSimulation(const char* parameter_file, const char* map_file){
 	int width = model->parameters->model_width;
 	int height = model->parameters->model_height;
 
+	printParameters(model->parameters);
+	printf("\n");
 	printCellMap(model->map, width, height);
 	freeModel(model);
 
