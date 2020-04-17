@@ -19,16 +19,16 @@ void freeModel(Model* model){
 		return;
 	}
 
-	int height = model->parameters->model_height;
+	int height = getParameters(model)->model_height;
 	freeCellMap(model->map, height);
-	freeParameters(model->parameters);
+	freeParameters(getParameters(model));
 	freePopulation(model->population);
 	free(model);
 }
 
 void pollPopulation(Model* model){
 	Population* population = model->population;
-	Parameters* parameters = model->parameters;
+	Parameters* parameters = getParameters(model);
 	int width = parameters->model_width;
 	int height = parameters->model_height;
 	CellMap* map = model->map;
@@ -44,6 +44,10 @@ void pollPopulation(Model* model){
 	}
 }
 
+
+Parameters* getParameters(Model* model){
+	return model->parameters;
+}
 void printModel(Model* model){
 	int width = model->parameters->model_width;
 	int height = model->parameters->model_height;

@@ -23,9 +23,9 @@ void runSimulation(Model* model){
 }
 
 void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
-	srand(model->parameters->seed);
+	srand(getParameters(model)->seed);
 
-	int iterations = model->parameters->simulation_iterations;
+	int iterations = getParameters(model)->simulation_iterations;
 
 	runIterationFunction(model, iterationFunction);
 	for (int i = 0; i < iterations; i++){
@@ -43,7 +43,7 @@ void runIterationFunction(Model* model, void(*iterationFunction) (Model*)){
 
 void stepSimulation(Model* model){
 
-	Parameters* parameters  = model->parameters;
+	Parameters* parameters  = getParameters(model);
 
 	int width = parameters->model_width;
 	int height = parameters->model_height;
@@ -59,7 +59,7 @@ void stepSimulation(Model* model){
 }
 
 void getCellsConditions(Model *model, ConditionMap* condition_map) {
-	Parameters *parameters = model->parameters;
+	Parameters *parameters = getParameters(model);
 
 	int width = parameters->model_width;
 	int height = parameters->model_height;
@@ -80,7 +80,7 @@ void spreadCellCondition(Model* model, ConditionMap* condition_map,  int positio
 	int y = position[1];
 
 
-	Parameters* parameters = model->parameters;
+	Parameters* parameters = getParameters(model);
 	int min_index[2] = {-1,-1};
 	int max_index[2] = {-1,-1};
 	int size[2] = {parameters->model_width,parameters->model_height};
@@ -112,7 +112,7 @@ void getBounds(int min_index[2], int max_index[2], double radius, int position[2
 
 void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int min_index[2], int max_index[2]){
 
-	Parameters* parameters = model->parameters;
+	Parameters* parameters = getParameters(model);
 	CellMap* map = model->map;
 
 	for (int row = min_index[1]; row < max_index[1]; row++) {
@@ -128,7 +128,7 @@ void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int m
 void simulateCells(Model *model, ConditionMap* conditions) {
 
 	initializePopulation(model->population);
-	Parameters *parameters = model->parameters;
+	Parameters *parameters = getParameters(model);
 
 	int width = parameters->model_width;
 	int height = parameters->model_height;

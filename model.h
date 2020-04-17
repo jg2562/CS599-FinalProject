@@ -17,5 +17,6 @@ void freeModel(Model* model);
 
 void pollPopulation(Model* model);
 
+Parameters* getParameters(Model* model);
 void printModel(Model* model);
 #endif /* MODEL_H */
