@@ -49,6 +49,7 @@ void testSimulation(const char* parameter_file, const char* map_file){
 	Model* model = loadModel(parameter_file, map_file);
 
 	printModel(model);
+	printf("\n==============\n\n");
 
 	runSimulation(model);
 
