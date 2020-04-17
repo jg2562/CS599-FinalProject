@@ -5,11 +5,11 @@
 #include "condition.h"
 #include "utils.h"
 
-#define EMPTY_CHAR '_'
-#define INFECTED_CHAR 'I'
-#define SUSCEPTIBLE_CHAR 's'
+#define EMPTY_CHAR ' '
+#define INFECTED_CHAR 'o'
+#define SUSCEPTIBLE_CHAR '.'
 #define DEAD_CHAR 'X'
-#define IMMUNE_CHAR 'g'
+#define IMMUNE_CHAR 'I'
 #define MOUNTAIN_CHAR 'M'
 #define STORE_CHAR '@'
 #define DEFAULT_CHAR '?'
