@@ -1,4 +1,5 @@
 #include "cell.h"
+#include "parameters.h"
 
 #define EMPTY_CHAR '_'
 #define INFECTED_CHAR 'I'
@@ -49,4 +50,22 @@ char cellToChar(Cell cell){
 	default:
 		return DEFAULT_CHAR;
 	}
+}
+
+
+double getEffectRadius(Cell* cell, Parameters* parameters){
+
+	switch(*cell){
+	case infected:
+		return parameters->spread_radius;
+	case empty:
+	case susceptible:
+	case dead:
+	case immune:
+	case mountain:
+	case store:
+	default:
+		return 0;
+	}
+	return 0;
 }
