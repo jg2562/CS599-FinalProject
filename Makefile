@@ -15,7 +15,7 @@ all: $(OUTPUT)
 
 $(OUTPUT): main.o simulation.o parser.o model.o parameters.o cellMap.o cell.o conditionMap.o population.o condition.o utils.o
 
-main.o: simulation.h model.h
+main.o: simulation.h model.h parser.h
 simulation.o: simulation.h parser.h model.h conditionMap.h condition.h utils.h cell.h
 parser.o: parser.h model.h parameters.h cellMap.h utils.h
 model.o: model.h parameters.h cellMap.h population.h

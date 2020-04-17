@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "simulation.h"
+#include "parser.h"
 #include "model.h"
 
 Model* loadModel(const char* parameter_file, const char* map_file);
