@@ -6,6 +6,7 @@
 Model* loadModel(const char* parameter_file, const char* map_file);
 void testSimulation(const char* parameter_file, const char* map_file);
 void animateSimulation(const char* parameter_file, const char* map_file);
+void runFullSimulation(const char* parameter_file, const char* map_file);
 void clearAndPrintModel(Model* model);
 
 int main(int argc, char** argv){
@@ -21,6 +22,8 @@ int main(int argc, char** argv){
 
 	if (strcmp(decision, "test") == 0) {
 		testSimulation(argv[2], argv[3]);
+	} else if (strcmp(decision, "run") == 0) {
+		runFullSimulation(argv[2], argv[3]);
 	} else if (strcmp(decision, "animate") == 0) {
 		animateSimulation(argv[2], argv[3]);
 	} else {
@@ -33,6 +36,11 @@ int main(int argc, char** argv){
 	exit(0);
 }
 
+void runFullSimulation(const char* parameter_file, const char* map_file){
+	Model* model = loadModel(parameter_file, map_file);
+	runSimulation(model);
+	freeModel(model);
+}
 
 void testSimulation(const char* parameter_file, const char* map_file){
 
