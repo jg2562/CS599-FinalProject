@@ -15,5 +15,7 @@ typedef struct Model{
 Model* createModel();
 void freeModel(Model* model);
 
+void pollPopulation(Model* model);
+
 void printModel(Model* model);
 #endif /* MODEL_H */
