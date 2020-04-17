@@ -10,7 +10,7 @@
 
 void stepSimulation(Model* model);
 void simulateCells(Model *model, ConditionMap* conditions);
-void simulateCell(Model* model, ConditionMap* conditions, int position[2]);
+void simulateCell(Model* model, Cell* current, Condition* condition);
 
 void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]);
 void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int min_index[2], int max_index[2]);
@@ -142,20 +142,16 @@ void simulateCells(Model *model, ConditionMap* conditions) {
 	int position[2] = {-1,-1};
 
 	for (int row = 0; row < height; row++) {
-		position[1] = row;
 		for (int col = 0; col < width; col++) {
-			position[0] = col;
+			Cell* current = &model->map[row][col];
+			Condition* condition = &conditions[row][col];
 
-			simulateCell(model, conditions, position);
+			simulateCell(model, current, condition);
 		}
 	}
 }
 
-void simulateCell(Model* model, ConditionMap* conditions, int position[2]){
-	int x = position[0];
-	int y = position[1];
-	Cell* current = &model->map[y][x];
-	Condition* condition = &conditions[y][x];
+void simulateCell(Model* model, Cell* current, Condition* condition){
 
 	applyConditionsToCell(current, condition);
 
