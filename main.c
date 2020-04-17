@@ -25,7 +25,8 @@ int main(int argc, char** argv){
 		animateSimulation(argv[2], argv[3]);
 	} else {
 		// Report an invalid flag
-		fprintf(stderr, "Invalid operation mode: %s\n", argv[1]);
+		fprintf(stderr, "Invalid operation mode: %s\n\n", argv[1]);
+		fprintf(stderr, "Valid operation modes: animate,test\n");
 		exit(-1);
 	}
 
