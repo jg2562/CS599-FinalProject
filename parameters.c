@@ -38,7 +38,7 @@ int checkParameters(Parameters* parameters){
 	}
 
 	if (parameters->model_width <= 0){
-		fprintf(stderr,"Parameter model height invalid value: %d\n", parameters->model_width);
+		fprintf(stderr,"Parameter model width invalid value: %d\n", parameters->model_width);
 		valid = 0;
 	}
 
