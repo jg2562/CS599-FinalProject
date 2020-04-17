@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "simulation.h"
+#include "model.h"
 
 Model* loadModel(const char* parameter_file, const char* map_file);
 void testSimulation(const char* parameter_file, const char* map_file);
@@ -82,6 +83,8 @@ Model* loadModel(const char* parameter_file, const char* map_file){
 		fprintf(stderr, "Failed to import model.\n");
 		exit(1);
 	}
+
+	pollPopulation(model);
 
 	return model;
 }
