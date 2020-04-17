@@ -3,7 +3,7 @@ DEBUG_LEVEL=-O0
 DEBUG=-ggdb
 OPTIMIZE= -O3
 CFLAGS= -Wall -Wextra -std=c11 -pedantic -Wwrite-strings
-OUTPUT=simulation
+OUTPUT=main
 LDFLAGS=
 LDLIBS=-lm
 
@@ -13,8 +13,9 @@ LDLIBS=-lm
 
 all: $(OUTPUT)
 
-$(OUTPUT): simulation.o parser.o model.o parameters.o cellMap.o cell.o
+$(OUTPUT): main.o simulation.o parser.o model.o parameters.o cellMap.o cell.o
 
+main.o: simulation.o
 simulation.o: parser.h model.h
 parser.o: parser.h model.h parameters.h cellMap.h
 model.o: model.h parameters.h cellMap.h
