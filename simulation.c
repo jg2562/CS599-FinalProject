@@ -36,6 +36,8 @@ void testSimulation(const char* parameter_file, const char* map_file){
 
 	printf("\n");
 	printCellMap(model->map, width, height);
+	printf("\n");
+	printPopulation(model->population);
 
 	freeModel(model);
 

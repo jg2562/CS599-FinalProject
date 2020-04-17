@@ -14,6 +14,8 @@ Population* createPopulation();
 void freePopulation(Population* population);
 void initializePopulation(Population* population);
 
+void printPopulation(Population* population);
+
 void pollCell(Population* population, Cell* cell);
 
 #endif /* POPULATION_H */

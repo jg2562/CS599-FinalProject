@@ -26,3 +26,10 @@ void pollCell(Population* population, Cell* cell){
 	population->susceptible += !isInfected(cell);
 	population->infected += isInfected(cell);
 }
+
+void printPopulation(Population* population){
+	printf("Susceptible: %d\n", population->susceptible);
+	printf("Infected: %d\n", population->infected);
+	printf("Dead: %d\n", population->dead);
+	printf("Immune: %d\n", population->immune);
+}
