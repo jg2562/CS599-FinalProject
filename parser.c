@@ -60,6 +60,7 @@ Parameters* importParameters(const char* fname){
 	}
 	parsed &= checkParameters(parameters);
 
+	fclose(fp);
 	if (parsed){
 		return parameters;
 	} else{
@@ -145,6 +146,7 @@ CellMap* importCellMap(const char* map_file, int width, int height){
 
 	int parsed = readCellMap(map, fp, width, height);
 
+	fclose(fp);
 	if (parsed){
 		return map;
 	} else {
