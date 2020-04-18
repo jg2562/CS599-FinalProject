@@ -9,7 +9,6 @@
 Model* loadModel(const char* parameter_file, const char* map_file);
 void testSimulation(const char* parameter_file, const char* map_file);
 void animateSimulation(const char* parameter_file, const char* map_file);
-void randomSimulation(const char * parameter_file);
 void runFullSimulation(const char* parameter_file, const char* map_file);
 void clearAndPrintModel(Model* model);
 Model* generateModel(const char* parameter_file);
@@ -72,25 +71,6 @@ void animateSimulation(const char* parameter_file, const char* map_file){
 	runSimulationIterator(model, clearAndPrintModel);
 }
 
-void randomSimulation(const char * parameter_file) {
-
-	Parameters* parameters = importParameters(parameter_file);
-	if (parameters == NULL){
-		fprintf(stderr, "Failed to import parameters.\n");
-		exit(1);
-	}
-
-	CellMap* map = generateRandomMap(parameters);
-	Model* model = createFilledModel(parameters, map);
-
-	if (parameters == NULL){
-		fprintf(stderr, "Failed to create model.\n");
-		exit(1);
-	}
-
-
-	runSimulationIterator(model, clearAndPrintModel);
-}
 
 void clearAndPrintModel(Model* model){
 	unsigned int usecs = 100000;
