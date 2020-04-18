@@ -71,7 +71,7 @@ Cell randomCell(){
 		SUSCEPTIBLE_CHAR,DEAD_CHAR,IMMUNE_CHAR,
 		MOUNTAIN_CHAR,STORE_CHAR,DEFAULT_CHAR};
 
-	int choice = rand() % cell_type_count;
+	int choice = randomInt(cell_type_count);
 
 	return charToCell(choices[choice]);
 }
