@@ -13,6 +13,7 @@ typedef struct Model{
 } Model;
 
 Model* createModel();
+Model* createFilledModel(Parameters* parameters, CellMap* cell_map);
 void freeModel(Model* model);
 
 void pollPopulation(Model* model);

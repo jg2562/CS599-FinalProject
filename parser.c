@@ -7,6 +7,7 @@
 
 #include "utils.h"
 #include "cellMap.h"
+#include "model.h"
 
 //function prototypes
 
@@ -34,9 +35,8 @@ Model* importModel(const char* parameter_file, const char* map_file){
 		return NULL;
 	}
 
-	Model* model = createModel();
-	model->parameters = parameters;
-	model->map = map;
+
+	Model* model = createFilledModel(parameters, map);
 	return model;
 }
 

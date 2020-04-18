@@ -13,7 +13,7 @@ LDLIBS=-lm
 
 all: $(OUTPUT)
 
-$(OUTPUT): main.o simulation.o parser.o model.o parameters.o cellMap.o cell.o conditionMap.o population.o condition.o utils.o random.o
+$(OUTPUT): main.o simulation.o parser.o model.o parameters.o cellMap.o cell.o conditionMap.o population.o condition.o utils.o random.o randomMap.o
 
 main.o: simulation.h model.h parser.h
 simulation.o: simulation.h parser.h model.h conditionMap.h condition.h utils.h cell.h random.h
@@ -27,6 +27,7 @@ population.o: population.h cell.h
 random.o: random.h utils.h
 condition.o: condition.h
 utils.o: utils.h
+randomMap.o: randomMap.h
 
 clean:
 	rm -f *.o $(OUTPUT)
