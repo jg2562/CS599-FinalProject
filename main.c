@@ -16,12 +16,13 @@ Model* generateModel(const char* parameter_file);
 void usleep(unsigned int);
 
 int main(int argc, char** argv){
-	if (3 <= argc && argc <= 4){
+	if (3 > argc || argc > 4){
 		fprintf(stderr, "===========================\n");
 		fprintf(stderr, "Error: 3 parameters expected, %d were given.\n", argc);
 		fprintf(stderr, "Proper Usage:\n");
 		fprintf(stderr, "\t%s <operation mode> <parameter file> [map file]\n", argv[0]);
 		fprintf(stderr, "===========================\n");
+		exit(1);
 	}
 
 	const char* decision = argv[1];
