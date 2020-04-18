@@ -85,8 +85,8 @@ void spreadCellCondition(Model* model, ConditionMap* condition_map,  int positio
 	int max_index[2] = {-1,-1};
 	int size[2] = {parameters->model_width,parameters->model_height};
 
-
-	Cell* cell = &model->map[y][x];
+	CellMap* map = getCellMap(model);
+	Cell* cell = &map[y][x];
 
 	if (!cellHasEffect(cell)){
 		return;
@@ -113,7 +113,7 @@ void getBounds(int min_index[2], int max_index[2], double radius, int position[2
 void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int min_index[2], int max_index[2]){
 
 	Parameters* parameters = getParameters(model);
-	CellMap* map = model->map;
+	CellMap* map = getCellMap(model);
 
 	for (int row = min_index[1]; row < max_index[1]; row++) {
 		for (int col = min_index[0]; col < max_index[0]; col++) {
@@ -133,9 +133,11 @@ void simulateCells(Model *model, ConditionMap* conditions) {
 	int width = parameters->model_width;
 	int height = parameters->model_height;
 
+	CellMap* map = model->map;
+
 	for (int row = 0; row < height; row++) {
 		for (int col = 0; col < width; col++) {
-			Cell* current = &model->map[row][col];
+			Cell* current = &map[row][col];
 			Condition* condition = &conditions[row][col];
 
 			simulateCell(model, current, condition);

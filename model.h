@@ -19,6 +19,7 @@ void pollPopulation(Model* model);
 
 Parameters* getParameters(Model* model);
 Population* getPopulation(Model* model);
+CellMap* getCellMap(Model* model);
 
 void printModel(Model* model);
 #endif /* MODEL_H */
