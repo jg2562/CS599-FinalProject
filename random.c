@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "utils.h"
 
 void randomSeed(unsigned long seed){
 	srand(seed);
