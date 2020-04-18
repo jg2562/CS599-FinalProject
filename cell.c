@@ -17,6 +17,7 @@
 
 void transmissionEffect(Cell* target, Parameters* parameters, Condition* target_condition);
 void tryInfectCell(Cell* cell, Condition* condition);
+void tryCureCell(Cell* cell, Parameters* condition);
 
 Cell createCell(){
 	return unknown;
@@ -114,6 +115,9 @@ void applyConditionsToCell(Cell* cell, Parameters* parameters, Condition* condit
 	case susceptible:
 		tryInfectCell(cell, condition);
 		break;
+	case infected:
+		tryCureCell(cell, parameters);
+		break;
 	default:
 		break;
 	}
@@ -124,6 +128,20 @@ void tryInfectCell(Cell* cell, Condition* condition){
 	int gotInfected = randomUniformEvent(infection_probabilty);
 	if (gotInfected){
 		*cell = infected;
+	}
+}
+
+void tryCureCell(Cell* cell, Parameters* parameters){
+	double recovery_probabilty = parameters->recovery_rate * 0.01;
+	int gotCured = randomUniformEvent(recovery_probabilty);
+	if (gotCured){
+		*cell = immune;
+	} else {
+		double death_probabilty = parameters->spread_rate * 0.01;
+		int gotKilled = randomUniformEvent(death_probabilty);
+		if (gotKilled){
+			*cell = dead;
+		}
 	}
 }
 
