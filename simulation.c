@@ -7,6 +7,7 @@
 #include "condition.h"
 #include "utils.h"
 #include "cell.h"
+#include "random.h"
 
 typedef struct Iteration{
 	unsigned int time_step;
