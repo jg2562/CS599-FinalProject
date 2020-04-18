@@ -1,56 +1,34 @@
 #include "randomMap.h"
 #include "parameters.h"
+#include "cellMap.h"
+#include "cell.h"
 #include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
 
+void fillCellMapRandomly(Parameters* parameters, CellMap* map);
 
-void generateRandomMap(const char * parameter_file, const char * map_file)
-{
-  FILE *map_p = fopen(map_file, "w");
-  FILE *param_p = fopen(parameter_file, "r");
+CellMap* generateRandomMap(Parameters* parameters) {
 
-  if (!map_p) {
-		fprintf(stderr,"Unable to open map file\n");
+	int width = parameters -> model_width;
+	int height= parameters -> model_height;
+
+	CellMap* map = createCellMap(width, height);
+
+	fillCellMapRandomly(parameters, map);
+
+	return map;
+}
+
+
+void fillCellMapRandomly(Parameters* parameters, CellMap* map){
+	int width = parameters -> model_width;
+	int height= parameters -> model_height;
+
+	for(int i = 0; i < height; i++) {
+		for(int j = 0; j < width; j++) {
+			Cell cell = randomCell();
+			map[i][j] = cell;
+		}
 	}
-  else if (!param_p)
-  {
-    fprintf(stderr, "Unable to open parameter file\n");
-  }
-
-  Parameters * params = importParameters(parameter_file);
-
-  int width = params -> model_width;
-  int height= params -> model_height;
-  int numchar = 7;
-  int randomNumber;
-  srand(params -> seed);
-
-  for(int i = 0; i < height; i++)
-  {
-    for(int j = 0; j < width; j++)
-    {
-      randomNumber = rand() % numchar;
-      switch(randomNumber)
-      {
-        case 0: fprintf(map_p, " ");
-        break;
-        case 1: fprintf(map_p, "o");
-        break;
-        case 2: fprintf(map_p, ".");
-        break;
-        case 3: fprintf(map_p, "X");
-        break;
-        case 4: fprintf(map_p, "I");
-        break;
-        case 5: fprintf(map_p, "M");
-        break;
-        case 6: fprintf(map_p, "@");
-        break;
-      }
-    }
-    fprintf(map_p, "\n");
-  }
-
-  fclose(map_p);
 }

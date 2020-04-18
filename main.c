@@ -72,8 +72,21 @@ void animateSimulation(const char* parameter_file, const char* map_file){
 
 void randomSimulation(const char * parameter_file, const char * map_file) {
 
-	generateRandomMap(parameter_file, map_file);
-	Model* model = loadModel(parameter_file, map_file);
+	Parameters* parameters = importParameters(parameter_file);
+	if (parameters == NULL){
+		fprintf(stderr, "Failed to import parameters.\n");
+		exit(1);
+	}
+
+	CellMap* map = generateRandomMap(parameters);
+	Model* model = createFilledModel(parameters, map);
+
+	if (parameters == NULL){
+		fprintf(stderr, "Failed to create model.\n");
+		exit(1);
+	}
+
+
 	runSimulationIterator(model, clearAndPrintModel);
 }
 

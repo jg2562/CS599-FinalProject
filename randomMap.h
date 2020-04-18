@@ -1,8 +1,9 @@
 #ifndef RANDOMMAP_H
 #define RANDOMMAP_H
 
+#include "parameters.h"
+#include "cellMap.h"
 
-
-void generateRandomMap(const char *, const char *);
+CellMap* generateRandomMap(Parameters* parameters);
 
 #endif
