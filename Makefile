@@ -13,7 +13,7 @@ LDLIBS=-lm
 
 all: $(OUTPUT)
 
-$(OUTPUT): main.o simulation.o parser.o model.o parameters.o cellMap.o cell.o conditionMap.o population.o condition.o utils.o
+$(OUTPUT): main.o simulation.o parser.o model.o parameters.o cellMap.o cell.o conditionMap.o population.o condition.o utils.o randomMap.o
 
 main.o: simulation.h model.h parser.h
 simulation.o: simulation.h parser.h model.h conditionMap.h condition.h utils.h cell.h
@@ -26,9 +26,10 @@ conditionMap.o: conditionMap.h condition.h
 population.o: population.h cell.h
 condition.o: condition.h
 utils.o: utils.h
+randomMap.o: randomMap.h
 
 clean:
-	rm -f *.o $(OUTPUT)
+	rm -f *.o random_map.txt $(OUTPUT)
 
 debug: CPPFLAGS += $(DEBUG)
 debug: all
