@@ -127,7 +127,7 @@ void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int m
 
 void simulateCells(Model *model, ConditionMap* conditions) {
 
-	initializePopulation(model->population);
+	initializePopulation(getPopulation(model));
 	Parameters *parameters = getParameters(model);
 
 	int width = parameters->model_width;
@@ -147,6 +147,6 @@ void simulateCell(Model* model, Cell* current, Condition* condition){
 
 	applyConditionsToCell(current, condition);
 
-	pollCell(model->population, current);
+	pollCell(getPopulation(model), current);
 }
 
