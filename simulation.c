@@ -8,15 +8,24 @@
 #include "utils.h"
 #include "cell.h"
 
-void stepSimulation(Model* model);
-void simulateCells(Model *model, ConditionMap* conditions);
+typedef struct Iteration{
+	unsigned int time_step;
+	Model* model;
+	ConditionMap* conditions;
+} Iteration;
+
+void stepSimulation(Model* model, unsigned int time_step);
+void simulateCells(Iteration* iteration);
 void simulateCell(Model* model, Cell* current, Condition* condition);
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*));
 
 void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]);
-void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int min_index[2], int max_index[2]);
-void spreadCellCondition(Model* model, ConditionMap* condition_map,  int position[2]);
-void getCellsConditions(Model *model, ConditionMap* condition_map);
+void applyEffect(Iteration* iteration, Cell* current, int min_index[2], int max_index[2]);
+void spreadCellCondition(Iteration* iteration,  int position[2]);
+void getCellsConditions(Iteration* iteration);
+
+Iteration* createIteration(Model* model, unsigned int current_step);
+void freeIteration(Iteration* iteration);
 
 void runSimulation(Model* model){
 	runSimulationIterator(model, NULL);
@@ -29,7 +38,7 @@ void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
 
 	runIterationFunction(model, iterationFunction);
 	for (int i = 0; i < iterations; i++){
-		stepSimulation(model);
+		stepSimulation(model, i);
 		runIterationFunction(model, iterationFunction);
 	}
 
@@ -41,25 +50,19 @@ void runIterationFunction(Model* model, void(*iterationFunction) (Model*)){
 	}
 }
 
-void stepSimulation(Model* model){
+void stepSimulation(Model* model, unsigned int time_step){
 
-	Parameters* parameters  = getParameters(model);
+	Iteration* iteration = createIteration(model, time_step);
 
-	int width = parameters->model_width;
-	int height = parameters->model_height;
+	getCellsConditions(iteration);
 
-	ConditionMap* conditions = createConditionMap(width, height);
+	simulateCells(iteration);
 
-	getCellsConditions(model, conditions);
-
-	simulateCells(model, conditions);
-
-	freeConditionMap(conditions, height);
-
+	freeIteration(iteration);
 }
 
-void getCellsConditions(Model *model, ConditionMap* condition_map) {
-	Parameters *parameters = getParameters(model);
+void getCellsConditions(Iteration* iteration) {
+	Parameters *parameters = getParameters(iteration->model);
 
 	int width = parameters->model_width;
 	int height = parameters->model_height;
@@ -70,22 +73,22 @@ void getCellsConditions(Model *model, ConditionMap* condition_map) {
 		for (int col = 0; col < width; col++) {
 			position[0] = col;
 
-			spreadCellCondition(model, condition_map, position);
+			spreadCellCondition(iteration, position);
 		}
 	}
 }
 
-void spreadCellCondition(Model* model, ConditionMap* condition_map,  int position[2]){
+void spreadCellCondition(Iteration* iteration,  int position[2]){
 	int x = position[0];
 	int y = position[1];
 
 
-	Parameters* parameters = getParameters(model);
+	Parameters* parameters = getParameters(iteration->model);
 	int min_index[2] = {-1,-1};
 	int max_index[2] = {-1,-1};
 	int size[2] = {parameters->model_width,parameters->model_height};
 
-	CellMap* map = getCellMap(model);
+	CellMap* map = getCellMap(iteration->model);
 	Cell* cell = &map[y][x];
 
 	if (!cellHasEffect(cell)){
@@ -96,7 +99,7 @@ void spreadCellCondition(Model* model, ConditionMap* condition_map,  int positio
 
 	getBounds(min_index,max_index,radius,position, size);
 
-	applyEffect(model, condition_map, cell, min_index, max_index);
+	applyEffect(iteration, cell, min_index, max_index);
 
 }
 
@@ -110,7 +113,9 @@ void getBounds(int min_index[2], int max_index[2], double radius, int position[2
 
 }
 
-void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int min_index[2], int max_index[2]){
+void applyEffect(Iteration* iteration, Cell* current, int min_index[2], int max_index[2]){
+	Model* model = iteration->model;
+	ConditionMap* condition_map = iteration->conditions;
 
 	Parameters* parameters = getParameters(model);
 	CellMap* map = getCellMap(model);
@@ -125,7 +130,10 @@ void applyEffect(Model* model, ConditionMap* condition_map, Cell* current, int m
 	}
 }
 
-void simulateCells(Model *model, ConditionMap* conditions) {
+void simulateCells(Iteration* iteration) {
+
+	Model* model = iteration->model;
+	ConditionMap* conditions = iteration->conditions;
 
 	initializePopulation(getPopulation(model));
 	Parameters *parameters = getParameters(model);
@@ -152,3 +160,29 @@ void simulateCell(Model* model, Cell* current, Condition* condition){
 	pollCell(getPopulation(model), current);
 }
 
+Iteration* createIteration(Model* model, unsigned int time_step){
+
+	if (model == NULL){
+		return NULL;
+	}
+
+	Iteration* iteration = malloc(sizeof(*iteration));
+
+	Parameters* parameters = getParameters(model);
+
+	int width = parameters->model_width;
+	int height = parameters->model_height;
+
+	iteration->model = model;
+	iteration->time_step = time_step;
+	iteration->conditions = createConditionMap(width, height);
+
+	return iteration;
+}
+
+void freeIteration(Iteration* iteration){
+	Model* model = iteration->model;
+	int height = getParameters(model)->model_height;
+
+	freeConditionMap(iteration->conditions, height);
+}
