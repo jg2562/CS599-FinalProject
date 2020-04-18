@@ -32,7 +32,7 @@ void runSimulation(Model* model){
 }
 
 void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
-	srand(getParameters(model)->seed);
+	randomSeed(getParameters(model)->seed);
 
 	int iterations = getParameters(model)->simulation_iterations;
 

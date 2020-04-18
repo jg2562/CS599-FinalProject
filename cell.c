@@ -4,6 +4,7 @@
 #include "parameters.h"
 #include "condition.h"
 #include "utils.h"
+#include "random.h"
 
 #define EMPTY_CHAR ' '
 #define INFECTED_CHAR 'o'
@@ -120,9 +121,8 @@ void applyConditionsToCell(Cell* cell, Condition* condition){
 
 void tryInfectCell(Cell* cell, Condition* condition){
 	double infection_probabilty = condition->infection_probabilty;
-	double susceptibility = min(infection_probabilty, 1) * RAND_MAX;
-	double susception_event = rand();
-	if (susception_event < susceptibility){
+	int gotInfected = randomUniformEvent(infection_probabilty);
+	if (gotInfected){
 		*cell = infected;
 	}
 }
