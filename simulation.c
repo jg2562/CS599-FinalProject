@@ -133,7 +133,7 @@ void simulateCells(Model *model, ConditionMap* conditions) {
 	int width = parameters->model_width;
 	int height = parameters->model_height;
 
-	CellMap* map = model->map;
+	CellMap* map = getCellMap(model);
 
 	for (int row = 0; row < height; row++) {
 		for (int col = 0; col < width; col++) {
