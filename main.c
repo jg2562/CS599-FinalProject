@@ -5,9 +5,11 @@
 #include "simulation.h"
 #include "parser.h"
 #include "model.h"
+#include "time.h"
 
 void testSimulation(const char* parameter_file, const char* map_file);
 void animateSimulation(const char* parameter_file, const char* map_file);
+void timeSimulation(const char* parameter_file, const char* map_file);
 
 Model* loadModel(const char* parameter_file, const char* map_file);
 void runFullSimulation(const char* parameter_file, const char* map_file);
@@ -35,10 +37,12 @@ int main(int argc, char** argv){
 		runFullSimulation(parameter_file, map_file);
 	} else if (strcmp(decision, "animate") == 0) {
 		animateSimulation(parameter_file, map_file);
+	} else if (strcmp(decision, "time") == 0) {
+		timeSimulation(parameter_file, map_file);
 	} else {
 		// Report an invalid flag
-		fprintf(stderr, "Invalid operation mode: %s\n\n", argv[1]);
-		fprintf(stderr, "Valid operation modes: run,animate,test\n");
+		fprintf(stderr, "Invalid operation mode: %s.\n\n", argv[1]);
+		fprintf(stderr, "Valid operation modes: run, time, animate, test.\n");
 		exit(-1);
 	}
 
@@ -72,6 +76,13 @@ void animateSimulation(const char* parameter_file, const char* map_file){
 	runSimulationIterator(model, clearAndPrintModel);
 }
 
+void timeSimulation(const char* parameter_file, const char* map_file){
+	Model* model = loadModel(parameter_file, map_file);
+	time_t simulation_start_time = time(NULL);
+	runSimulation(model);
+	time_t simulation_end_time = time(NULL);
+	double seconds = difftime(simulation_end_time, simulation_start_time);
+	printf("Simulation time: %.1lfs\n", seconds);
 
 void clearAndPrintModel(Model* model){
 	unsigned int usecs = 100000;
