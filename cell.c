@@ -154,9 +154,20 @@ void tryCureCell(Cell* cell, Parameters* parameters){
 		}
 	}
 }
+int isSusceptible(Cell* cell){
+	return *cell == susceptible;
+}
 
 int isInfected(Cell* cell){
 	return *cell == infected;
+}
+
+int isImmune(Cell* cell){
+	return *cell == immune;
+}
+
+int isDead(Cell* cell){
+	return *cell == dead;
 }
 
 int isCreature(Cell* cell){

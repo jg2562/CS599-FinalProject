@@ -18,7 +18,10 @@ void applyCellEffect(Cell* cell, Cell* target, Parameters* parameters, Condition
 
 void applyConditionsToCell(Cell* cell, Parameters* parameters, Condition* condition, unsigned int time_step);
 
+int isSusceptible(Cell* cell);
 int isInfected(Cell* cell);
+int isImmune(Cell* cell);
+int isDead(Cell* cell);
 int isCreature(Cell* cell);
 
 #endif /* CELL_H */
