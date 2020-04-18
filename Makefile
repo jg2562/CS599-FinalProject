@@ -29,7 +29,7 @@ utils.o: utils.h
 randomMap.o: randomMap.h
 
 clean:
-	rm -f *.o random_map.txt $(OUTPUT)
+	rm -f *.o $(OUTPUT)
 
 debug: CPPFLAGS += $(DEBUG)
 debug: all
