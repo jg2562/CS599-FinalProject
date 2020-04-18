@@ -109,7 +109,7 @@ void transmissionEffect(Cell* target, Parameters* parameters, Condition* target_
 	}
 }
 
-void applyConditionsToCell(Cell* cell, Condition* condition){
+void applyConditionsToCell(Cell* cell, Parameters* parameters, Condition* condition, unsigned int time_step){
 	switch(*cell){
 	case susceptible:
 		tryInfectCell(cell, condition);

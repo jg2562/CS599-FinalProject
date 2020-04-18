@@ -14,7 +14,8 @@ Cell createCell();
 int cellHasEffect(Cell* cell);
 double getEffectRadius(Cell* cell, Parameters* parameters);
 void applyCellEffect(Cell* cell, Cell* target, Parameters* parameters, Condition* target_condition);
-void applyConditionsToCell(Cell* cell, Condition* condition);
+
+void applyConditionsToCell(Cell* cell, Parameters* parameters, Condition* condition, unsigned int time_step);
 
 int isInfected(Cell* cell);
 int isCreature(Cell* cell);

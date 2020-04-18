@@ -17,7 +17,7 @@ typedef struct Iteration{
 
 void stepSimulation(Model* model, unsigned int time_step);
 void simulateCells(Iteration* iteration);
-void simulateCell(Model* model, Cell* current, Condition* condition);
+void simulateCell(Model* model, Cell* current, Condition* condition, unsigned int time_step);
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*));
 
 void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]);
@@ -138,6 +138,7 @@ void simulateCells(Iteration* iteration) {
 
 	initializePopulation(getPopulation(model));
 	Parameters *parameters = getParameters(model);
+	unsigned int time_step = iteration->time_step;
 
 	int width = parameters->model_width;
 	int height = parameters->model_height;
@@ -149,14 +150,15 @@ void simulateCells(Iteration* iteration) {
 			Cell* current = &map[row][col];
 			Condition* condition = &conditions[row][col];
 
-			simulateCell(model, current, condition);
+			simulateCell(model, current, condition, time_step);
 		}
 	}
 }
 
-void simulateCell(Model* model, Cell* current, Condition* condition){
+void simulateCell(Model* model, Cell* current, Condition* condition, unsigned int time_step){
+	Parameters* parameters = getParameters(model);
 
-	applyConditionsToCell(current, condition);
+	applyConditionsToCell(current, parameters, condition, time_step);
 
 	pollCell(getPopulation(model), current);
 }
