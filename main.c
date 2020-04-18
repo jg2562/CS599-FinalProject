@@ -83,6 +83,7 @@ void timeSimulation(const char* parameter_file, const char* map_file){
 	time_t simulation_end_time = time(NULL);
 	double seconds = difftime(simulation_end_time, simulation_start_time);
 	printf("Simulation time: %.1lfs\n", seconds);
+}
 
 void clearAndPrintModel(Model* model){
 	unsigned int usecs = 100000;
