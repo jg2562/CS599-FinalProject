@@ -6,9 +6,10 @@
 #include "parser.h"
 #include "model.h"
 
-Model* loadModel(const char* parameter_file, const char* map_file);
 void testSimulation(const char* parameter_file, const char* map_file);
 void animateSimulation(const char* parameter_file, const char* map_file);
+
+Model* loadModel(const char* parameter_file, const char* map_file);
 void runFullSimulation(const char* parameter_file, const char* map_file);
 void clearAndPrintModel(Model* model);
 Model* generateModel(const char* parameter_file);
