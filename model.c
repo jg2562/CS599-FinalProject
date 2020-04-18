@@ -13,6 +13,17 @@ Model* createModel(){
 	return model;
 }
 
+Model* createFilledModel(Parameters* parameters, CellMap* cell_map){
+	if (parameters == NULL || cell_map == NULL){
+		return NULL;
+	}
+
+	Model* model = createModel();
+	model->map = cell_map;
+	model->parameters = parameters;
+
+	return model;
+}
 
 void freeModel(Model* model){
 	if (model == NULL){
