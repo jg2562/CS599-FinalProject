@@ -14,6 +14,7 @@
 #define STORE_CHAR '@'
 #define DEFAULT_CHAR '?'
 
+unsigned int cell_type_count = 7;
 void transmissionEffect(Cell* target, Parameters* parameters, Condition* target_condition);
 void tryInfectCell(Cell* cell, Condition* condition);
 
@@ -63,6 +64,15 @@ char cellToChar(Cell cell){
 	}
 }
 
+Cell randomCell(){
+	char choices[] = {EMPTY_CHAR,INFECTED_CHAR,
+		SUSCEPTIBLE_CHAR,DEAD_CHAR,IMMUNE_CHAR,
+		MOUNTAIN_CHAR,STORE_CHAR,DEFAULT_CHAR};
+
+	int choice = rand() % cell_type_count;
+
+	return charToCell(choices[choice]);
+}
 
 double getEffectRadius(Cell* cell, Parameters* parameters){
 
