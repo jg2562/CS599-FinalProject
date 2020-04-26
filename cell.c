@@ -67,9 +67,9 @@ char cellToChar(Cell cell){
 }
 
 Cell randomCell(){
-	char choices[] = {EMPTY_CHAR,INFECTED_CHAR,
-		SUSCEPTIBLE_CHAR,DEAD_CHAR,IMMUNE_CHAR,
-		MOUNTAIN_CHAR,STORE_CHAR,DEFAULT_CHAR};
+	char choices[] = {EMPTY_CHAR, INFECTED_CHAR,
+		SUSCEPTIBLE_CHAR, DEAD_CHAR, IMMUNE_CHAR,
+		MOUNTAIN_CHAR, STORE_CHAR, DEFAULT_CHAR};
 
 	int choice = randomInt(cell_type_count);
 
