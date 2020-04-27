@@ -6,7 +6,11 @@ void freeQueueNode(QueueNode* node);
 
 void enqueue(Queue* queue, void* value){
 	QueueNode* node = createQueueNode(value);
-	queue->tail->next = node;
+	if (queue->head == NULL){
+		queue->head = node;
+	} else {
+		queue->tail->next = node;
+	}
 	queue->tail = node;
 }
 
