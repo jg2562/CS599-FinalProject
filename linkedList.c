@@ -121,7 +121,7 @@ void freeList(ListNode* node, void freeData()) {
 
 	next = node->next;
 
-	if (node->value) {
+	if (node->value && freeData != NULL) {
 		freeData(node->value);
 	}
 
