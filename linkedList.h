@@ -1,8 +1,6 @@
 #ifndef LINKED_LIST_HEADER
 #define LINKED_LIST_HEADER
 
-#include <stdio.h>
-
 typedef struct ListNode {
 	void* value;
 	struct ListNode* next;

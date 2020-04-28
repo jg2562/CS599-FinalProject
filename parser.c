@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "cellMap.h"
 #include "model.h"
+#include "linkedList.h"
 
 //function prototypes
 
