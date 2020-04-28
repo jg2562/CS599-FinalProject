@@ -86,6 +86,29 @@ LinkedList* deleteItemFromList(ListNode* node, const void* item, int compare(), 
 	return node;
 }
 
+LinkedList* deleteNodeFromList(ListNode* node, void** returnItem, int index){
+	if (node == NULL){
+		if (returnItem != NULL){
+			*returnItem = NULL;
+		}
+
+		return node;
+	}else if(index == 0){
+		ListNode* next = node->next;
+
+		if (returnItem != NULL){
+			*returnItem = node->value;
+		}
+
+		free(node);
+
+		return next;
+	}
+
+	node->next = deleteNodeFromList(node->next, returnItem, index);
+	return node;
+}
+
 ListNode* findNodeInList(ListNode* node, const void* item, int compare()) {
 	if (node == NULL) {
 		return NULL;
