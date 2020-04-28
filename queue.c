@@ -35,4 +35,5 @@ Queue *createQueue() {
 
 void freeQueue(Queue* queue, void freeData(void* data)){
 	freeList(queue->head, freeData);
+	free(queue);
 }
