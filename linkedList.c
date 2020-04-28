@@ -59,8 +59,7 @@ void* findItemInList(LinkedList* root, const void* item, int compare()) {
 	ListNode* node = findNodeInList(root, item, compare);
 	if (node) {
 		return node->value;
-	}
-	else {
+	} else {
 		return NULL;
 	}
 }
