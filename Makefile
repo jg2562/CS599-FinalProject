@@ -27,7 +27,7 @@ population.o: population.h cell.h
 random.o: random.h utils.h
 condition.o: condition.h
 utils.o: utils.h
-randomMap.o: randomMap.h cellMap.h cell.h parser.h parameter.h
+randomMap.o: randomMap.h cellMap.h cell.h parser.h parameters.h
 parallel.o: parallel.h queue.h
 queue.o: queue.h linkedList.h
 linkedList.o: linkedList.h
