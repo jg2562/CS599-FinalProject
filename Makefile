@@ -19,7 +19,7 @@ main.o: simulation.h model.h parser.h
 simulation.o: simulation.h parser.h model.h conditionMap.h condition.h utils.h cell.h random.h
 parser.o: parser.h model.h parameters.h cellMap.h utils.h
 model.o: model.h parameters.h cellMap.h population.h
-parameters.o: parameters.h
+parameters.o: parameters.h utils.h
 cellMap.o: cellMap.h cell.h
 cell.o: cell.h condition.h parameters.h utils.h random.h
 conditionMap.o: conditionMap.h condition.h
