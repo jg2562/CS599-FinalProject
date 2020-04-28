@@ -1,20 +1,16 @@
 #ifndef QUEUE_H
 #define QUEUE_H
-
-typedef struct QueueNode{
-	void* value;
-	struct QueueNode* next;
-}QueueNode;
+#include "linkedList.h"
 
 typedef struct Queue{
-	QueueNode* head;
-	QueueNode* tail;
+	ListNode* head;
+	ListNode* tail;
 }Queue;
 
 void enqueue(Queue* queue, void* value);
 void* dequeue(Queue* queue);
 Queue* createQueue();
-void freeQueue(Queue* queue);
+void freeQueue(Queue* queue, void freeData(void* data));
 
 
 
