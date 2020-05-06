@@ -13,22 +13,25 @@ typedef struct Iteration{
 	unsigned int time_step;
 	Model* model;
 	ConditionMap* conditions;
+	int block_range[2];
 } Iteration;
 
-void stepSimulation(Model* model, unsigned int time_step);
+void stepSimulation(Model* model, unsigned int time_step, int* block_range);
 void simulateCells(Iteration* iteration);
 void simulateBlock(Iteration* iteration, int* block);
 void simulateCell(Model* model, Cell* current, Condition* condition, unsigned int time_step);
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*));
+void getIterationBlocks(int* blocks, Parameters* parameters);
 int segmentDimension(int length, int segmentation);
 
 void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]);
 void applyEffect(Iteration* iteration, Cell* current, int min_index[2], int max_index[2]);
 void spreadCellCondition(Iteration* iteration,  int position[2]);
 void getCellsConditions(Iteration* iteration);
+void blockIndexToPosition(int* block_pos, int block_index, Parameters* parameters);
 void getCellBlockConditions(Iteration* iteration, int* block);
 
-Iteration* createIteration(Model* model, unsigned int current_step);
+Iteration* createIteration(Model* model, unsigned int time_step, int* block_range);
 void freeIteration(Iteration* iteration);
 
 void runSimulation(Model* model){
@@ -38,14 +41,25 @@ void runSimulation(Model* model){
 void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
 	randomSeed(getParameters(model)->seed);
 
-	int iterations = getParameters(model)->simulation_iterations;
+	Parameters* parameters = getParameters(model);
+	int iterations = parameters->simulation_iterations;
+	int block_range[2];
+	getIterationBlocks(block_range, parameters);
 
 	runIterationFunction(model, iterationFunction);
 	for (int i = 0; i < iterations; i++){
-		stepSimulation(model, i);
+		stepSimulation(model, i, block_range);
 		runIterationFunction(model, iterationFunction);
 	}
 
+}
+
+void getIterationBlocks(int* blocks, Parameters* parameters){
+	int width = segmentDimension(parameters->model_width, parameters->block_width);
+	int height = segmentDimension(parameters->model_height, parameters->block_height);
+	int block_count = width*height;
+	blocks[0] = 0;
+	blocks[1] = block_count;
 }
 
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*)){
@@ -54,9 +68,9 @@ void runIterationFunction(Model* model, void(*iterationFunction) (Model*)){
 	}
 }
 
-void stepSimulation(Model* model, unsigned int time_step){
+void stepSimulation(Model* model, unsigned int time_step, int* block_range){
 
-	Iteration* iteration = createIteration(model, time_step);
+	Iteration* iteration = createIteration(model, time_step, block_range);
 
 	getCellsConditions(iteration);
 
@@ -68,20 +82,21 @@ void stepSimulation(Model* model, unsigned int time_step){
 void getCellsConditions(Iteration* iteration) {
 	Parameters *parameters = getParameters(iteration->model);
 
-	int width = segmentDimension(parameters->model_width, parameters->block_width);
-	int height = segmentDimension(parameters->model_height, parameters->block_height);
-
 	int block[2] = {-1,-1};
+	int* block_range = iteration->block_range;
 
-	for (int block_row = 0; block_row < height; block_row++) {
-		block[1] = block_row;
-		for (int block_col = 0; block_col < width; block_col++) {
-			block[0] = block_col;
-
-			getCellBlockConditions(iteration, block);
-		}
+	for (int block_index = block_range[0]; block_index < block_range[1]; block_index++){
+		blockIndexToPosition(block, block_index, parameters);
+		getCellBlockConditions(iteration, block);
 	}
 }
+
+void blockIndexToPosition(int* block_pos, int block_index, Parameters* parameters){
+	int width = segmentDimension(parameters->model_width, parameters->block_width);
+	block_pos[0] = block_index % width;
+	block_pos[1] = block_index / width;
+}
+
 
 int segmentDimension(int length, int segmentation){
 	int divided = length / segmentation;
@@ -164,17 +179,13 @@ void simulateCells(Iteration* iteration) {
 	initializePopulation(getPopulation(model));
 	Parameters *parameters = getParameters(model);
 
-	int width = segmentDimension(parameters->model_width, parameters->block_width);
-	int height = segmentDimension(parameters->model_height, parameters->block_height);
 
 	int block[2] = {-1,-1};
+	int* block_range = iteration->block_range;
 
-	for (int row = 0; row < height; row++) {
-		block[1] = row;
-		for (int col = 0; col < width; col++) {
-			block[0] = col;
-			simulateBlock(iteration, block);
-		}
+	for (int block_index = block_range[0]; block_index < block_range[1]; block_index++){
+		blockIndexToPosition(block, block_index, parameters);
+		simulateBlock(iteration, block);
 	}
 }
 
@@ -213,7 +224,7 @@ void simulateCell(Model* model, Cell* current, Condition* condition, unsigned in
 	pollCell(getPopulation(model), current);
 }
 
-Iteration* createIteration(Model* model, unsigned int time_step){
+Iteration* createIteration(Model* model, unsigned int time_step, int* block_range){
 
 	if (model == NULL){
 		return NULL;
@@ -229,6 +240,8 @@ Iteration* createIteration(Model* model, unsigned int time_step){
 	iteration->model = model;
 	iteration->time_step = time_step;
 	iteration->conditions = createConditionMap(width, height);
+	iteration->block_range[0] = block_range[0];
+	iteration->block_range[1] = block_range[1];
 
 	return iteration;
 }
