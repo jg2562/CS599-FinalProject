@@ -29,6 +29,7 @@ void applyEffect(Iteration* iteration, Cell* current, int min_index[2], int max_
 void spreadCellCondition(Iteration* iteration,  int position[2]);
 void getCellsConditions(Iteration* iteration);
 void blockIndexToPosition(int* block_pos, int block_index, Parameters* parameters);
+int getDimensionLength(int block_index, int block_len, int map_size);
 void getCellBlockConditions(Iteration* iteration, int* block);
 
 Iteration* createIteration(Model* model, unsigned int time_step, int* block_range);
@@ -107,18 +108,25 @@ int segmentDimension(int length, int segmentation){
 void getCellBlockConditions(Iteration* iteration, int* block){
 	Parameters *parameters = getParameters(iteration->model);
 
-	int width = parameters->block_width;
-	int height = parameters->block_height;
+	int dimensional_width = parameters->block_width;
+	int dimensional_height = parameters->block_height;
+	int looping_width = getDimensionLength(block[0], parameters->block_width, parameters->model_width);
+	int looping_height = getDimensionLength(block[1], parameters->block_height, parameters->model_height);
 	int position[2] = {-1,-1};
 
-	for (int row = 0; row < height; row++) {
-		position[1] = block[1] * height + row;
-		for (int col = 0; col < width; col++) {
-			position[0] = block[0] * width + col;
+	for (int row = 0; row < looping_height; row++) {
+		position[1] = block[1] * dimensional_height + row;
+		for (int col = 0; col < looping_width; col++) {
+			position[0] = block[0] * dimensional_width + col;
 
 			spreadCellCondition(iteration, position);
 		}
 	}
+}
+
+int getDimensionLength(int block_index, int block_len, int map_size){
+	int max_index = (block_index + 1) * block_len;
+	return  max_index < map_size ? block_len : map_size - max_index + block_len;
 }
 
 void spreadCellCondition(Iteration* iteration,  int position[2]){
@@ -197,17 +205,19 @@ void simulateBlock(Iteration* iteration, int* block){
 	Parameters *parameters = getParameters(model);
 	unsigned int time_step = iteration->time_step;
 
-	int width = parameters->block_width;
-	int height = parameters->block_height;
+	int dimensional_width = parameters->block_width;
+	int dimensional_height = parameters->block_height;
+	int looping_width = getDimensionLength(block[0], parameters->block_width, parameters->model_width);
+	int looping_height = getDimensionLength(block[1], parameters->block_height, parameters->model_height);
 
 	CellMap* map = getCellMap(model);
 
 	int row;
 	int col;
-	for (int sub_row = 0; sub_row < height; sub_row++) {
-		row = block[1] * height + sub_row;
-		for (int sub_col = 0; sub_col < width; sub_col++) {
-			col = block[0] * width + sub_col;
+	for (int sub_row = 0; sub_row < looping_height; sub_row++) {
+		row = block[1] * dimensional_height + sub_row;
+		for (int sub_col = 0; sub_col < looping_width; sub_col++) {
+			col = block[0] * dimensional_width + sub_col;
 			Cell* current = &map[row][col];
 			Condition* condition = &conditions[row][col];
 
