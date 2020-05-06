@@ -154,7 +154,7 @@ void tryCureCell(Cell* cell, Parameters* parameters){
 	if (gotCured){
 		cell->state = immune;
 	} else {
-		double death_probabilty = parameters->spread_rate * 0.01;
+		double death_probabilty = parameters->recovery_rate * 0.01;
 		int gotKilled = randomUniformEvent(death_probabilty);
 		if (gotKilled){
 			cell->state = dead;
