@@ -22,7 +22,7 @@ void parallelEnd(){
 }
 
 unsigned int getRank(){
-	return 1;
+	return 0;
 }
 
 unsigned int getTotalRanks(){
