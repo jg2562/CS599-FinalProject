@@ -25,6 +25,8 @@ Parameters* createParameters(){
 	parameters->recovery_rate = -1;
 	parameters->model_height = -1;
 	parameters->model_width = -1;
+	parameters->block_height = -1;
+	parameters->block_width = -1;
 	parameters->seed = -1;
 	parameters->simulation_iterations = -1;
 	return parameters;
@@ -53,6 +55,12 @@ Parameters* parseParameters(LinkedList* parameter_list){
 							validateIntGreaterThanZero, printErrorParameterInt);
 
 	valid &= parseParameter(parameter_list,&parameters->model_width, "model width", "%d",
+							validateIntGreaterThanZero, printErrorParameterInt);
+
+	valid &= parseParameter(parameter_list,&parameters->block_height, "block height", "%d",
+							validateIntGreaterThanZero, printErrorParameterInt);
+
+	valid &= parseParameter(parameter_list,&parameters->block_width, "block width", "%d",
 							validateIntGreaterThanZero, printErrorParameterInt);
 
 	valid &= parseParameter(parameter_list,&parameters->seed, "seed", "%d",
@@ -119,6 +127,8 @@ void printParameters(Parameters* parameters){
 	printf("Recovery rate: %lf\n", parameters->recovery_rate);
 	printf("Model height: %d\n", parameters->model_height);
 	printf("Model width: %d\n", parameters->model_width);
+	printf("Block height: %d\n", parameters->block_height);
+	printf("Block width: %d\n", parameters->block_width);
 	printf("Seed: %d\n", parameters->seed);
 	printf("Simulation iterations: %d\n", parameters->simulation_iterations);
 }
