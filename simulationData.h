@@ -20,6 +20,5 @@ SimulationData* createSimulationData(Model* model);
 void freeSimulationData(SimulationData* data);
 Iteration* createIteration(SimulationData* data, unsigned int time_step);
 void freeIteration(Iteration* iteration);
-int segmentDimension(int length, int segmentation);
 
 #endif /* SIMULATIONDATA_H */

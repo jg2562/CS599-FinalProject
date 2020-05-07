@@ -32,7 +32,7 @@ parallel.o: parallel.h queue.h
 queue.o: queue.h linkedList.h
 linkedList.o: linkedList.h
 simulationData.o: simulationData.h model.h conditionMap.h parameters.h
-block.o: block.h parameters.h
+block.o: block.h parameters.h utils.h
 
 clean:
 	rm -f *.o $(OUTPUT)
