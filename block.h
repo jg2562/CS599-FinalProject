@@ -11,5 +11,6 @@ void getMapDimensionsInBlocks(int* dimensions, Parameters* parameters);
 void blockIndexToPosition(int* block_pos, int block_index, Parameters* parameters);
 void globalPositionToBlock(int* block, int* global_pos, Parameters* parameters);
 void localIndexToPosition(int* local_position, int index, int* block, Parameters* parameters);
+int getTotalBlocks(Parameters* parameters);
 
 #endif /* BLOCK_H */

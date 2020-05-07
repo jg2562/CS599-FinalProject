@@ -51,10 +51,7 @@ void getMapDimensionsInBlocks(int* dimensions, Parameters* parameters){
 }
 
 void getIterationBlocks(int* blocks, Parameters* parameters){
-	int width = segmentDimension(parameters->model_width, parameters->block_width);
-	int height = segmentDimension(parameters->model_height, parameters->block_height);
-	int block_count = width*height;
-
+	int block_count = getTotalBlocks(parameters);
 	blocks[0] = 0;
 	blocks[1] = block_count;
 }
@@ -80,4 +77,11 @@ void localIndexToPosition(int* local_position, int index, int* block, Parameters
 
 	local_position[0] = index % block_dim[0];
 	local_position[1] = index / block_dim[0];
+}
+
+int getTotalBlocks(Parameters* parameters){
+	int width = segmentDimension(parameters->model_width, parameters->block_width);
+	int height = segmentDimension(parameters->model_height, parameters->block_height);
+
+	return width*height;
 }
