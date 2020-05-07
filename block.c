@@ -45,6 +45,11 @@ void globalPositionToBlock(int* block, int* global_pos, Parameters* parameters){
 
 }
 
+void getMapDimensionsInBlocks(int* dimensions, Parameters* parameters){
+	dimensions[0] = segmentDimension(parameters->block_width, parameters->model_width);
+	dimensions[1] = segmentDimension(parameters->block_height, parameters->model_height);
+}
+
 void getIterationBlocks(int* blocks, Parameters* parameters){
 	int width = segmentDimension(parameters->model_width, parameters->block_width);
 	int height = segmentDimension(parameters->model_height, parameters->block_height);
@@ -68,3 +73,4 @@ int segmentDimension(int length, int segmentation){
 	divided += (length % segmentation) != 0;
 	return divided;
 }
+
