@@ -31,7 +31,7 @@ randomMap.o: randomMap.h cellMap.h cell.h parser.h parameters.h
 parallel.o: parallel.h queue.h
 queue.o: queue.h linkedList.h
 linkedList.o: linkedList.h
-simulationData.o: simulationData.h model.h conditionMap.h
+simulationData.o: simulationData.h model.h conditionMap.h parameters.h
 
 clean:
 	rm -f *.o $(OUTPUT)

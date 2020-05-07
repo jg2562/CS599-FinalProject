@@ -10,12 +10,11 @@
 #include "random.h"
 #include "simulationData.h"
 
-void stepSimulation(Model* model, unsigned int time_step, int* block_range);
+void stepSimulation(SimulationData* data, unsigned int time_step);
 void simulateCells(Iteration* iteration);
 void simulateBlock(Iteration* iteration, int* block);
 void simulateCell(Model* model, Cell* current, Condition* condition, unsigned int time_step);
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*));
-void getIterationBlocks(int* blocks, Parameters* parameters);
 int segmentDimension(int length, int segmentation);
 
 void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]);
@@ -35,23 +34,14 @@ void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
 
 	Parameters* parameters = getParameters(model);
 	int iterations = parameters->simulation_iterations;
-	int block_range[2];
-	getIterationBlocks(block_range, parameters);
+	SimulationData* data = createSimulationData(model);
 
 	runIterationFunction(model, iterationFunction);
 	for (int i = 0; i < iterations; i++){
-		stepSimulation(model, i, block_range);
+		stepSimulation(data, i);
 		runIterationFunction(model, iterationFunction);
 	}
 
-}
-
-void getIterationBlocks(int* blocks, Parameters* parameters){
-	int width = segmentDimension(parameters->model_width, parameters->block_width);
-	int height = segmentDimension(parameters->model_height, parameters->block_height);
-	int block_count = width*height;
-	blocks[0] = 0;
-	blocks[1] = block_count;
 }
 
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*)){
@@ -60,9 +50,9 @@ void runIterationFunction(Model* model, void(*iterationFunction) (Model*)){
 	}
 }
 
-void stepSimulation(Model* model, unsigned int time_step, int* block_range){
+void stepSimulation(SimulationData* data, unsigned int time_step){
 
-	Iteration* iteration = createIteration(model, time_step, block_range);
+	Iteration* iteration = createIteration(data, time_step);
 
 	getCellsConditions(iteration);
 
@@ -89,12 +79,6 @@ void blockIndexToPosition(int* block_pos, int block_index, Parameters* parameter
 	block_pos[1] = block_index / width;
 }
 
-
-int segmentDimension(int length, int segmentation){
-	int divided = length / segmentation;
-	divided += (length % segmentation) != 0;
-	return divided;
-}
 
 void getCellBlockConditions(Iteration* iteration, int* block){
 	Parameters *parameters = getParameters(iteration->model);
