@@ -34,3 +34,11 @@ char* duplicateString(const char* str){
 	strcpy(copy, str);
 	return copy;
 }
+
+void boundBox(int min_index[2], int max_index[2], int bound_min[2], int bound_max[2]){
+	min_index[0] = max(min_index[0], bound_min[0]);
+	min_index[1] = max(min_index[1], bound_min[1]);
+
+	max_index[0] = min(max_index[0], bound_max[0]);
+	max_index[1] = min(max_index[1], bound_max[1]);
+}
