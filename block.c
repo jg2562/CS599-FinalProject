@@ -74,3 +74,10 @@ int segmentDimension(int length, int segmentation){
 	return divided;
 }
 
+void localIndexToPosition(int* local_position, int index, int* block, Parameters* parameters){
+	int block_dim[2];
+	getBlockDimensions(block_dim, block, parameters);
+
+	local_position[0] = index % block_dim[0];
+	local_position[1] = index / block_dim[0];
+}
