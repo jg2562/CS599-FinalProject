@@ -7,6 +7,7 @@ typedef struct SimulationData{
 	Model* model;
 	int block_range[2];
 	ConditionMap* conditions;
+	int** send_count;
 } SimulationData;
 
 typedef struct Iteration{
@@ -14,6 +15,7 @@ typedef struct Iteration{
 	Model* model;
 	int block_range[2];
 	ConditionMap* conditions;
+	int** send_count;
 } Iteration;
 
 SimulationData* createSimulationData(Model* model);
