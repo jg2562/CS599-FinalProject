@@ -8,13 +8,7 @@
 #include "utils.h"
 #include "cell.h"
 #include "random.h"
-
-typedef struct Iteration{
-	unsigned int time_step;
-	Model* model;
-	ConditionMap* conditions;
-	int block_range[2];
-} Iteration;
+#include "simulationData.h"
 
 void stepSimulation(Model* model, unsigned int time_step, int* block_range);
 void simulateCells(Iteration* iteration);
@@ -31,9 +25,6 @@ void getCellsConditions(Iteration* iteration);
 void blockIndexToPosition(int* block_pos, int block_index, Parameters* parameters);
 int getDimensionLength(int block_index, int block_len, int map_size);
 void getCellBlockConditions(Iteration* iteration, int* block);
-
-Iteration* createIteration(Model* model, unsigned int time_step, int* block_range);
-void freeIteration(Iteration* iteration);
 
 void runSimulation(Model* model){
 	runSimulationIterator(model, NULL);
@@ -232,34 +223,4 @@ void simulateCell(Model* model, Cell* current, Condition* condition, unsigned in
 	applyConditionsToCell(current, parameters, condition, time_step);
 
 	pollCell(getPopulation(model), current);
-}
-
-Iteration* createIteration(Model* model, unsigned int time_step, int* block_range){
-
-	if (model == NULL){
-		return NULL;
-	}
-
-	Iteration* iteration = malloc(sizeof(*iteration));
-
-	Parameters* parameters = getParameters(model);
-
-	int width = parameters->model_width;
-	int height = parameters->model_height;
-
-	iteration->model = model;
-	iteration->time_step = time_step;
-	iteration->conditions = createConditionMap(width, height);
-	iteration->block_range[0] = block_range[0];
-	iteration->block_range[1] = block_range[1];
-
-	return iteration;
-}
-
-void freeIteration(Iteration* iteration){
-	Model* model = iteration->model;
-	int height = getParameters(model)->model_height;
-
-	freeConditionMap(iteration->conditions, height);
-	free(iteration);
 }
