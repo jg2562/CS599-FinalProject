@@ -9,20 +9,18 @@
 #include "cell.h"
 #include "random.h"
 #include "simulationData.h"
+#include "block.h"
 
 void stepSimulation(SimulationData* data, unsigned int time_step);
 void simulateCells(Iteration* iteration);
 void simulateBlock(Iteration* iteration, int* block);
 void simulateCell(Model* model, Cell* current, Condition* condition, unsigned int time_step);
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*));
-int segmentDimension(int length, int segmentation);
 
 void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]);
 void applyEffect(Iteration* iteration, Cell* current, int min_index[2], int max_index[2]);
 void spreadCellCondition(Iteration* iteration,  int position[2]);
 void getCellsConditions(Iteration* iteration);
-void blockIndexToPosition(int* block_pos, int block_index, Parameters* parameters);
-int getDimensionLength(int block_index, int block_len, int map_size);
 void getCellBlockConditions(Iteration* iteration, int* block);
 
 void runSimulation(Model* model){
@@ -73,13 +71,6 @@ void getCellsConditions(Iteration* iteration) {
 	}
 }
 
-void blockIndexToPosition(int* block_pos, int block_index, Parameters* parameters){
-	int width = segmentDimension(parameters->model_width, parameters->block_width);
-	block_pos[0] = block_index % width;
-	block_pos[1] = block_index / width;
-}
-
-
 void getCellBlockConditions(Iteration* iteration, int* block){
 	Parameters *parameters = getParameters(iteration->model);
 
@@ -97,11 +88,6 @@ void getCellBlockConditions(Iteration* iteration, int* block){
 			spreadCellCondition(iteration, position);
 		}
 	}
-}
-
-int getDimensionLength(int block_index, int block_len, int map_size){
-	int max_index = (block_index + 1) * block_len;
-	return  max_index < map_size ? block_len : map_size - max_index + block_len;
 }
 
 void spreadCellCondition(Iteration* iteration,  int position[2]){

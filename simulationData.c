@@ -4,8 +4,7 @@
 #include <stdlib.h>
 
 #include "parameters.h"
-
-void getIterationBlocks(int* blocks, Parameters* parameters);
+#include "block.h"
 
 SimulationData* createSimulationData(Model* model){
 	if (model == NULL){
@@ -62,16 +61,3 @@ void freeIteration(Iteration* iteration){
 	free(iteration);
 }
 
-void getIterationBlocks(int* blocks, Parameters* parameters){
-	int width = segmentDimension(parameters->model_width, parameters->block_width);
-	int height = segmentDimension(parameters->model_height, parameters->block_height);
-	int block_count = width*height;
-	blocks[0] = 0;
-	blocks[1] = block_count;
-}
-
-int segmentDimension(int length, int segmentation){
-	int divided = length / segmentation;
-	divided += (length % segmentation) != 0;
-	return divided;
-}
