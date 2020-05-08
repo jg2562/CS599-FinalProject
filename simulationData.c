@@ -50,6 +50,7 @@ void freeSimulationData(SimulationData* data){
 	int height = getParameters(model)->model_height;
 	freeConditionMap(data->conditions, height);
 	freeSendMatrix(data->send_count, getParameters(model));
+	free(data);
 }
 
 void freeSendMatrix(int** matrix, Parameters* parameters){
@@ -70,14 +71,9 @@ Iteration* createIteration(SimulationData* data, unsigned int time_step){
 
 	Iteration* iteration = malloc(sizeof(*iteration));
 
-	Parameters* parameters = getParameters(data->model);
-
-	int width = parameters->model_width;
-	int height = parameters->model_height;
-
 	iteration->model = data->model;
 	iteration->time_step = time_step;
-	iteration->conditions = createConditionMap(width, height);
+	iteration->conditions = data->conditions;
 	iteration->block_range[0] = data->block_range[0];
 	iteration->block_range[1] = data->block_range[1];
 	iteration->send_count = data->send_count;

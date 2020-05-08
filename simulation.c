@@ -47,7 +47,7 @@ void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
 		stepSimulation(data, i);
 		runIterationFunction(model, iterationFunction);
 	}
-
+	freeSimulationData(data);
 }
 
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*)){
