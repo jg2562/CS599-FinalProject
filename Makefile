@@ -16,7 +16,7 @@ all: $(OUTPUT)
 $(OUTPUT): main.o simulation.o parser.o model.o parameters.o cellMap.o cell.o conditionMap.o population.o condition.o utils.o random.o randomMap.o queue.o parallel.o linkedList.o simulationData.o block.o
 
 main.o: simulation.h model.h parser.h randomMap.h
-simulation.o: simulation.h parser.h model.h conditionMap.h condition.h utils.h cell.h random.h block.h
+simulation.o: simulation.h parser.h model.h conditionMap.h condition.h utils.h cell.h random.h block.h parallel.h
 parser.o: parser.h model.h parameters.h cellMap.h utils.h cell.h linkedList.h
 model.o: model.h parameters.h cellMap.h population.h
 parameters.o: parameters.h utils.h linkedList.h
@@ -28,7 +28,7 @@ random.o: random.h utils.h
 condition.o: condition.h
 utils.o: utils.h
 randomMap.o: randomMap.h cellMap.h cell.h parser.h parameters.h
-parallel.o: parallel.h queue.h
+parallel.o: parallel.h queue.h cell.h block.h
 queue.o: queue.h linkedList.h
 linkedList.o: linkedList.h
 simulationData.o: simulationData.h model.h conditionMap.h parameters.h

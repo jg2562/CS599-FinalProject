@@ -37,6 +37,9 @@ int** createSendMatrix(Parameters* parameters){
 	int** matrix = malloc(sizeof(*matrix) * dimensions[1]);
 	for (int i = 0; i < dimensions[1]; i++){
 		matrix[i] = malloc(sizeof(**matrix) * dimensions[0]);
+		for (int j = 0; j < dimensions[0]; j++){
+			matrix[i][j] = 0;
+		}
 	}
 
 	return matrix;

@@ -1,6 +1,8 @@
-#include "queue.h"
+#include "parallel.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "queue.h"
+#include "block.h"
 
 static Queue* mpiQueue = NULL;
 static Queue* metaQueue = NULL;
@@ -29,12 +31,31 @@ unsigned int getTotalRanks(){
 	return 1;
 }
 
-void sendIntMessage(int* message, unsigned int size, unsigned int rank_to){
-	enqueue(mpiQueue, message);
+int hasMessages(){
+	return 0;
 }
 
-unsigned int receiveIntMessage(int** message, unsigned int size, unsigned int rank_from){
-	*message = dequeue(mpiQueue);
+void sendCellArrayToBlock(CellMessage* array, int count, int* block, Parameters* parameters){
+	CellMessage first;
+	first.x = positionToBlockIndex(block, parameters);
+	first.y = count;
 
-	return size;
+	array[0] = first;
+	//TODO Actually send message
+}
+
+void receiveCellArrayAtBlock(CellMessage* array, int* count, int* block, Parameters* parameters){
+	//TODO Actually receive message
+	CellMessage first = array[0];
+	blockIndexToPosition(block, first.x, parameters);
+	*count = first.y;
+}
+
+CellMessage* createCellMessage(Parameters* parameters){
+	CellMessage* message = malloc(sizeof(*message) * parameters->block_height * parameters->block_width+1);
+	return message;
+}
+
+void freeCellMessage(CellMessage* message){
+	free(message);
 }

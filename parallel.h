@@ -1,5 +1,12 @@
 #ifndef PARALLEL_H
 #define PARALLEL_H
+#include "cell.h"
+
+typedef struct CellMessage{
+	int x;
+	int y;
+	Cell cell;
+}CellMessage;
 
 void parallelBegin();
 void parallelEnd();
@@ -7,7 +14,11 @@ void parallelEnd();
 unsigned int getRank();
 unsigned int getTotalRanks();
 
-unsigned int receiveIntMessage(int** message, unsigned int size, unsigned int rank_from);
-void sendIntMessage(int* message, unsigned int size, unsigned int rank_to);
+CellMessage* createCellMessage(Parameters* parameters);
+void freeCellMessage(CellMessage* message);
+
+int hasMessages();
+void sendCellArrayToBlock(CellMessage* array, int count, int* block, Parameters* parameters);
+void receiveCellArrayAtBlock(CellMessage* array, int* count, int* block, Parameters* parameters);
 
 #endif /* PARALLEL_H */

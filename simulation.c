@@ -10,6 +10,7 @@
 #include "random.h"
 #include "simulationData.h"
 #include "block.h"
+#include "parallel.h"
 
 void stepSimulation(SimulationData* data, unsigned int time_step);
 void simulateCells(Iteration* iteration);
@@ -17,11 +18,18 @@ void simulateBlock(Iteration* iteration, int* block);
 void simulateCell(Model* model, Cell* current, Condition* condition, unsigned int time_step);
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*));
 
+void getEffectBox(int* min_index,int* max_index, Cell* cell, int* position, Parameters* parameters);
 void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]);
-void applyEffect(Iteration* iteration, Cell* current, int min_index[2], int max_index[2]);
-void spreadCellCondition(Iteration* iteration,  int position[2]);
+void getBlockBounds(int min_index[2], int max_index[2], int* block, Parameters* parameters);
+void applyEffectLocally(Iteration* iteration, Cell* current, int* block, int min_index[2], int max_index[2]);
+void applyEffectGlobally(Iteration* iteration, int* block, Cell* current, int min_index[2], int max_index[2]);
+void spreadCellCondition(Iteration* iteration, int* block, int position[2]);
+void fillSendConditionArray(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters);
 void getCellsConditions(Iteration* iteration);
 void getCellBlockConditions(Iteration* iteration, int* block);
+void sendCellsConditions(Iteration* iteration, int* block);
+void applyCellMessageEffects(Iteration* iteration, CellMessage* message, int count, int* block);
+void queueCellForBlock(Iteration* iteration, Cell* cell, int* block);
 
 void runSimulation(Model* model){
 	runSimulationIterator(model, NULL);
@@ -86,12 +94,13 @@ void getCellBlockConditions(Iteration* iteration, int* block){
 		for (int col = 0; col < block_dimensions[0]; col++) {
 			position[0] = block_origin[0] + col;
 
-			spreadCellCondition(iteration, position);
+			spreadCellCondition(iteration, block, position);
 		}
 	}
+	sendCellsConditions(iteration, block);
 }
 
-void spreadCellCondition(Iteration* iteration,  int position[2]){
+void spreadCellCondition(Iteration* iteration, int* block, int position[2]){
 	int x = position[0];
 	int y = position[1];
 
@@ -99,7 +108,6 @@ void spreadCellCondition(Iteration* iteration,  int position[2]){
 	Parameters* parameters = getParameters(iteration->model);
 	int min_index[2] = {-1,-1};
 	int max_index[2] = {-1,-1};
-	int size[2] = {parameters->model_width,parameters->model_height};
 
 	CellMap* map = getCellMap(iteration->model);
 	Cell* cell = &map[y][x];
@@ -108,12 +116,16 @@ void spreadCellCondition(Iteration* iteration,  int position[2]){
 		return;
 	}
 
+	getEffectBox(min_index, max_index, cell, position, parameters);
+
+	applyEffectGlobally(iteration, block, cell, min_index, max_index);
+}
+
+void getEffectBox(int* min_index,int* max_index, Cell* cell, int* position, Parameters* parameters){
+	int size[2] = {parameters->model_width,parameters->model_height};
 	double radius = getEffectRadius(cell, parameters);
 
-	getBounds(min_index,max_index,radius,position, size);
-
-	applyEffect(iteration, cell, min_index, max_index);
-
+	getBounds(min_index, max_index, radius, position, size);
 }
 
 void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]){
@@ -126,20 +138,167 @@ void getBounds(int min_index[2], int max_index[2], double radius, int position[2
 
 }
 
-void applyEffect(Iteration* iteration, Cell* current, int min_index[2], int max_index[2]){
+void getBlockBounds(int min_index[2], int max_index[2], int* block, Parameters* parameters){
+	int origin[2];
+	int terminus[2];
+
+	getBlockOrigin(origin, block, parameters);
+	getBlockTerminus(terminus, block, parameters);
+
+	boundBox(min_index,max_index,origin,terminus);
+}
+
+void applyEffectGlobally(Iteration* iteration, int* block, Cell* cell, int min_index[2], int max_index[2]){
+	Parameters* parameters = getParameters(iteration->model);
+	int min_block[2];
+	int max_block[2];
+	int max_index_adjusted[2] = {max_index[0]-1,max_index[1]-1};
+
+	globalPositionToBlock(min_block, min_index, parameters);
+	globalPositionToBlock(max_block, max_index_adjusted, parameters);
+
+	int to_block[2];
+	for (int block_row = min_block[1]; block_row <= max_block[1]; block_row++){
+
+		for (int block_col = min_block[0]; block_col <= max_block[0]; block_col++){
+			to_block[0] = block_col;
+			to_block[1] = block_row;
+			if (isBlockLocal(block, parameters)){
+				applyEffectLocally(iteration, cell, to_block, min_index, max_index);
+			} else {
+
+				queueCellForBlock(iteration, cell, to_block);
+			}
+		}
+	}
+}
+
+void applyExternalEffect(Iteration* iteration, CellMessage* current, int* block){
+	Parameters* parameters = getParameters(iteration->model);
+	int min_index[2];
+	int max_index[2];
+
+	int min_block[2];
+	int max_block[2];
+
+	Cell* cell = &current->cell;
+	int position[2] = {current->x, current->y};
+
+	getEffectBox(min_index, max_index, cell, position, parameters);
+
+	globalPositionToBlock(min_block, min_index, parameters);
+	globalPositionToBlock(max_block, max_index, parameters);
+
+	applyEffectLocally(iteration, cell, block, min_index, max_index);
+
+}
+
+void applyEffectLocally(Iteration* iteration, Cell* current, int* block, int min_index[2], int max_index[2]){
 	Model* model = iteration->model;
 	ConditionMap* condition_map = iteration->conditions;
 
 	Parameters* parameters = getParameters(model);
 	CellMap* map = getCellMap(model);
 
-	for (int row = min_index[1]; row < max_index[1]; row++) {
-		for (int col = min_index[0]; col < max_index[0]; col++) {
+	int min_block[2] = {min_index[0],min_index[1]};
+	int max_block[2] = {max_index[0],max_index[1]};
+	getBlockBounds(min_block, max_block, block, parameters);
+
+	for (int row = min_block[1]; row < max_block[1]; row++) {
+		for (int col = min_block[0]; col < max_block[0]; col++) {
 			Cell* target = &map[row][col];
 			Condition* target_conditions = &condition_map[row][col];
 
 			applyCellEffect(current, target, parameters, target_conditions);
 		}
+	}
+}
+
+void queueCellForBlock(Iteration* iteration, Cell* cell, int* block){
+	Parameters* parameters = getParameters(iteration->model);
+	CellMap* map = getCellMap(iteration->model);
+	int** send_count = iteration->send_count;
+
+	int block_position[2];
+	int local_position[2];
+	int row;
+	int col;
+
+	getBlockOrigin(block_position, block, parameters);
+	localIndexToPosition(local_position, send_count[block[1]][block[0]]++, block, parameters);
+
+	col = block_position[0] + local_position[0];
+	row = block_position[1] + local_position[1];
+
+	map[col][row] = *cell;
+}
+
+
+void sendCellsConditions(Iteration* iteration, int* block){
+	Parameters* parameters = getParameters(iteration->model);
+	CellMap* map = getCellMap(iteration->model);
+	int** send_counts = iteration->send_count;
+
+	int map_dims[2];
+	CellMessage* send_cells = createCellMessage(parameters);
+	getMapDimensionsInBlocks(map_dims, parameters);
+
+	for (int row = 0; row < map_dims[1]; row++){
+		for (int col = 0; col < map_dims[0]; col++){
+			int send_count = send_counts[row][col];
+			if (send_count > 0){
+				fillSendConditionArray(send_cells, send_count, map, block, parameters);
+
+				sendCellArrayToBlock(send_cells, send_count, block, parameters);
+				send_counts[row][col] = 0;
+			}
+		}
+	}
+
+	freeCellMessage(send_cells);
+}
+
+void fillSendConditionArray(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters){
+	int block_dims[2];
+	getBlockDimensions(block_dims, block, parameters);
+
+	// First cell is used for block into
+	int index = 1;
+	for (int row = 0; row < block_dims[1]; row++){
+		for (int col = 0; col < block_dims[0]; col++){
+			if (index >= send_count){
+				break;
+			}
+			CellMessage message;
+			message.x = col;
+			message.y = row;
+			message.cell = map[row][col];
+			send_cells[index++] = message;
+		}
+	}
+
+}
+
+void receiveAnyCellConditions(Iteration* iteration){
+	Parameters* parameters = getParameters(iteration->model);
+
+	CellMessage* message = createCellMessage(parameters);
+	int block_index = 0;
+	int count = 0;
+	int block_pos[2];
+
+	while (hasMessages()){
+		receiveCellArrayAtBlock(message, &count, &block_index, parameters);
+		blockIndexToPosition(block_pos, block_index, parameters);
+		applyCellMessageEffects(iteration, message, count, block_pos);
+	}
+	freeCellMessage(message);
+}
+
+void applyCellMessageEffects(Iteration* iteration, CellMessage* message, int count, int* block){
+
+	for (int i = 1; i < count; i++){
+		applyExternalEffect(iteration, &message[i], block);
 	}
 }
 

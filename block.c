@@ -3,6 +3,7 @@
 
 int segmentDimension(int length, int segmentation);
 int getDimensionLength(int block_index, int block_len, int map_size);
+int positionToBlockIndex(int* block, Parameters* parameters);
 
 void getBlockOrigin(int* origin, int* block_pos, Parameters* parameters){
 	int max_width = parameters->model_width;
@@ -34,6 +35,12 @@ void blockIndexToPosition(int* block_pos, int block_index, Parameters* parameter
 
 	block_pos[0] = block_index % block_map_width;
 	block_pos[1] = block_index / block_map_width;
+}
+
+int positionToBlockIndex(int* block, Parameters* parameters){
+	int block_map_width = segmentDimension(parameters->model_width, parameters->block_width);
+
+	return block[0] + block[1] * block_map_width;
 }
 
 void globalPositionToBlock(int* block, int* global_pos, Parameters* parameters){
@@ -84,4 +91,18 @@ int getTotalBlocks(Parameters* parameters){
 	int height = segmentDimension(parameters->model_height, parameters->block_height);
 
 	return width*height;
+}
+
+int getBlockArea(int* block, Parameters* parameters){
+	int dimensions[2];
+	getBlockDimensions(dimensions, block, parameters);
+	return dimensions[0]*dimensions[1];
+}
+
+int isBlockLocal(int* block, Parameters* parameters){
+	int blocks[2];
+	getIterationBlocks(blocks, parameters);
+
+	int position = positionToBlockIndex(block, parameters);
+	return blocks[0] <= position && position < blocks[1];
 }
