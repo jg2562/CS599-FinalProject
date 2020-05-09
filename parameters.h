@@ -8,6 +8,8 @@ typedef struct Parameters {
 	double recovery_rate;
 	int model_height;
 	int model_width;
+	int block_height;
+	int block_width;
 	int seed;
 	int simulation_iterations;
 
