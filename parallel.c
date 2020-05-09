@@ -348,7 +348,7 @@ void createPopulationDatatype(){
 }
 
 CellMessage* createCellMessage(Parameters* parameters){
-	CellMessage* message = malloc(sizeof(*message) * getMaxBlockArea(parameters)+1);
+	CellMessage* message = malloc(sizeof(*message) * (getMaxBlockArea(parameters)+1));
 	return message;
 }
 
