@@ -5,6 +5,7 @@
 
 #include "parameters.h"
 #include "block.h"
+#include "parallel.h"
 
 void freeSendMatrix(int** matrix, Parameters* parameters);
 int** createSendMatrix(Parameters* parameters);
@@ -25,7 +26,7 @@ SimulationData* createSimulationData(Model* model){
 	data->conditions = createConditionMap(width, height);
 	data->send_count = createSendMatrix(parameters);
 
-	getIterationBlocks(data->block_range, parameters);
+	getLocalBlockRange(data->block_range, parameters);
 
 	return data;
 }
