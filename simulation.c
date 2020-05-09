@@ -27,6 +27,7 @@ void spreadCellCondition(Iteration* iteration, int* block, int position[2]);
 void fillSendConditionArray(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters);
 void getCellsConditions(Iteration* iteration);
 void getCellBlockConditions(Iteration* iteration, int* block);
+void receiveAnyCellConditions(Iteration* iteration);
 void sendCellsConditions(Iteration* iteration, int* block);
 void applyCellMessageEffects(Iteration* iteration, CellMessage* message, int count, int* block);
 void queueCellForBlock(Iteration* iteration, Cell* cell, int* block);
@@ -77,6 +78,8 @@ void getCellsConditions(Iteration* iteration) {
 		blockIndexToPosition(block, block_index, parameters);
 		getCellBlockConditions(iteration, block);
 	}
+	synchronize();
+	receiveAnyCellConditions(iteration);
 }
 
 void getCellBlockConditions(Iteration* iteration, int* block){
@@ -98,6 +101,7 @@ void getCellBlockConditions(Iteration* iteration, int* block){
 		}
 	}
 	sendCellsConditions(iteration, block);
+	receiveAnyCellConditions(iteration);
 }
 
 void spreadCellCondition(Iteration* iteration, int* block, int position[2]){
