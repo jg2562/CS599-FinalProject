@@ -230,14 +230,17 @@ void receiveCellArrayAtBlock(CellMessage* array, int* count, int* block, Paramet
 	MPI_Recv(array, block_size+1, mpi_cell_message_type, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status);
 
 	CellMessage first = array[0];
-	blockIndexToPosition(block, first.x, parameters);
+	int block_index = first.x;
+	blockIndexToPosition(block, block_index, parameters);
 	*count = first.y;
 #endif
 }
 
 void fillSendCellsArray(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters){
 	int block_dims[2];
+	int origin[2];
 	getBlockDimensions(block_dims, block, parameters);
+	getBlockOrigin(origin, block, parameters);
 
 	// First cell is used for block into
 	int index = 0;
@@ -249,7 +252,7 @@ void fillSendCellsArray(CellMessage* send_cells, int send_count, CellMap* map, i
 			CellMessage message;
 			message.x = col;
 			message.y = row;
-			message.cell = map[row][col];
+			message.cell = map[row+origin[1]][col+origin[0]];
 			send_cells[index+1] = message;
 			index++;
 		}
