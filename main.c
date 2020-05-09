@@ -107,7 +107,7 @@ void timeSimulation(const char* parameter_file, const char* map_file){
 
 void testSimulation(const char* parameter_file, const char* map_file){
 
-
+	displaySimulation(parameter_file, map_file);
 
 }
 
