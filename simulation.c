@@ -50,7 +50,7 @@ void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
 		runIterationFunction(model, iterationFunction);
 	}
 	freeSimulationData(data);
-	gatherModel(model);
+	model = gatherModel(model);
 }
 
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*)){

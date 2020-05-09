@@ -129,12 +129,14 @@ void getLocalBlockRange(int* blocks, Parameters* parameters){
 	blocks[1] = min(block_per_rank * (getRank()+1), block_count);
 }
 
-void gatherModel(Model* model){
+Model* gatherModel(Model* model){
 	gatherCellMap(model->map, model->parameters);
 	reducePopulation(model->population);
 	if (!isRootRank()){
 		freeModel(model);
+		return NULL;
 	}
+	return model;
 }
 
 void gatherCellMap(CellMap* map, Parameters* parameters){
