@@ -212,6 +212,7 @@ void sendCellArrayToBlock(CellMessage* array, int count, int* block, Parameters*
 
 	MPI_Request request;
 	MPI_Isend(array, count+1, mpi_cell_message_type, to_rank, 0, MPI_COMM_WORLD, &request);
+	MPI_Request_free(&request);
 #endif
 }
 
