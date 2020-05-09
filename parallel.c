@@ -35,6 +35,9 @@ int hasMessages(){
 	return 0;
 }
 
+void synchronize(){
+}
+
 void sendCellArrayToBlock(CellMessage* array, int count, int* block, Parameters* parameters){
 	CellMessage first;
 	first.x = positionToBlockIndex(block, parameters);

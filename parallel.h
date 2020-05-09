@@ -17,6 +17,7 @@ unsigned int getTotalRanks();
 CellMessage* createCellMessage(Parameters* parameters);
 void freeCellMessage(CellMessage* message);
 
+void synchronize();
 int hasMessages();
 void sendCellArrayToBlock(CellMessage* array, int count, int* block, Parameters* parameters);
 void receiveCellArrayAtBlock(CellMessage* array, int* count, int* block, Parameters* parameters);
