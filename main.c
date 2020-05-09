@@ -2,11 +2,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include "parallel.h"
 #include "randomMap.h"
 #include "simulation.h"
 #include "parser.h"
 #include "model.h"
 
+void displaySimulation(const char* parameter_file, const char* map_file);
 void testSimulation(const char* parameter_file, const char* map_file);
 void animateSimulation(const char* parameter_file, const char* map_file);
 void timeSimulation(const char* parameter_file, const char* map_file);
@@ -18,12 +20,15 @@ Model* generateModel(const char* parameter_file);
 void usleep(unsigned int);
 
 int main(int argc, char** argv){
+	parallelBegin(&argc, &argv);
+
 	if (3 > argc || argc > 4){
 		fprintf(stderr, "===========================\n");
 		fprintf(stderr, "Error: 3 parameters expected, %d were given.\n", argc);
 		fprintf(stderr, "Proper Usage:\n");
 		fprintf(stderr, "\t%s <operation mode> <parameter file> [map file]\n", argv[0]);
 		fprintf(stderr, "===========================\n");
+		parallelEnd();
 		exit(1);
 	}
 
@@ -31,21 +36,25 @@ int main(int argc, char** argv){
 	const char* parameter_file = argv[2];
 	const char* map_file = argv[3];
 
-	if (strcmp(decision, "test") == 0) {
-		testSimulation(parameter_file, map_file);
+	if (strcmp(decision, "display") == 0) {
+		displaySimulation(parameter_file, map_file);
 	} else if (strcmp(decision, "run") == 0) {
 		runFullSimulation(parameter_file, map_file);
 	} else if (strcmp(decision, "animate") == 0) {
 		animateSimulation(parameter_file, map_file);
 	} else if (strcmp(decision, "time") == 0) {
 		timeSimulation(parameter_file, map_file);
+	} else if (strcmp(decision, "test") == 0) {
+		testSimulation(parameter_file, map_file);
 	} else {
 		// Report an invalid flag
 		fprintf(stderr, "Invalid operation mode: %s.\n\n", argv[1]);
-		fprintf(stderr, "Valid operation modes: run, time, animate, test.\n");
+		fprintf(stderr, "Valid operation modes: run, time, animate, display.\n");
+		parallelEnd();
 		exit(-1);
 	}
 
+	parallelEnd();
 	exit(0);
 }
 
@@ -55,16 +64,20 @@ void runFullSimulation(const char* parameter_file, const char* map_file){
 	freeModel(model);
 }
 
-void testSimulation(const char* parameter_file, const char* map_file){
+void displaySimulation(const char* parameter_file, const char* map_file){
 
 	Model* model = loadModel(parameter_file, map_file);
 
-	printModel(model);
-	printf("\n==============\n\n");
+	if(isRootRank()){
+		printModel(model);
+		printf("\n==============\n\n");
+	}
 
 	runSimulation(model);
 
-	printModel(model);
+	if(isRootRank()){
+		printModel(model);
+	}
 
 	freeModel(model);
 
@@ -82,10 +95,26 @@ void timeSimulation(const char* parameter_file, const char* map_file){
 	runSimulation(model);
 	time_t simulation_end_time = time(NULL);
 	double seconds = difftime(simulation_end_time, simulation_start_time);
-	printf("Simulation time: %.1lfs\n", seconds);
+
+	if(isRootRank()){
+		printf("Simulation time: %.1lfs\n", seconds);
+	}
+
 }
 
+void testSimulation(const char* parameter_file, const char* map_file){
+
+	displaySimulation(parameter_file, map_file);
+
+}
+
+
 void clearAndPrintModel(Model* model){
+	gatherModel(model);
+	if (!isRootRank()){
+		return;
+	}
+
 	unsigned int usecs = 100000;
 
 	for(int i = 0; i < 100; i++){
@@ -99,6 +128,10 @@ void clearAndPrintModel(Model* model){
 
 Model* loadModel(const char* parameter_file, const char* map_file){
 	Model* model;
+	if (!isRootRank()){
+		return NULL;
+	}
+
 	if (map_file == NULL){
 		model = generateModel(parameter_file);
 	} else {
@@ -107,6 +140,7 @@ Model* loadModel(const char* parameter_file, const char* map_file){
 
 	if (model == NULL){
 		fprintf(stderr, "Failed to import model.\n");
+		parallelEnd();
 		exit(1);
 	}
 

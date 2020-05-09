@@ -1,4 +1,4 @@
-CC=gcc
+CC=mpicc
 DEBUG_LEVEL=-O0
 DEBUG=-ggdb
 OPTIMIZE= -O3
@@ -28,11 +28,11 @@ random.o: random.h utils.h
 condition.o: condition.h
 utils.o: utils.h
 randomMap.o: randomMap.h cellMap.h cell.h parser.h parameters.h
-parallel.o: parallel.h queue.h cell.h block.h
+parallel.o: parallel.h queue.h cell.h block.h cellMap.h
 queue.o: queue.h linkedList.h
 linkedList.o: linkedList.h
 simulationData.o: simulationData.h model.h conditionMap.h parameters.h
-block.o: block.h parameters.h utils.h
+block.o: block.h parameters.h utils.h parallel.h cellMap.h
 
 clean:
 	rm -f *.o $(OUTPUT)

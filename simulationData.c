@@ -25,7 +25,7 @@ SimulationData* createSimulationData(Model* model){
 	data->conditions = createConditionMap(width, height);
 	data->send_count = createSendMatrix(parameters);
 
-	getIterationBlocks(data->block_range, parameters);
+	getLocalBlockRange(data->block_range, parameters);
 
 	return data;
 }

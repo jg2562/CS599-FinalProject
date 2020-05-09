@@ -1,5 +1,7 @@
 #include "block.h"
 #include "utils.h"
+#include "parallel.h"
+#include "cellMap.h"
 
 int segmentDimension(int length, int segmentation);
 int getDimensionLength(int block_index, int block_len, int map_size);
@@ -57,12 +59,6 @@ void getMapDimensionsInBlocks(int* dimensions, Parameters* parameters){
 	dimensions[1] = segmentDimension(parameters->block_height, parameters->model_height);
 }
 
-void getIterationBlocks(int* blocks, Parameters* parameters){
-	int block_count = getTotalBlocks(parameters);
-	blocks[0] = 0;
-	blocks[1] = block_count;
-}
-
 int getDimensionLength(int block_index, int block_len, int map_size){
 	int max_index = (block_index + 1) * block_len;
 	if (max_index < map_size){
@@ -99,10 +95,15 @@ int getBlockArea(int* block, Parameters* parameters){
 	return dimensions[0]*dimensions[1];
 }
 
+int getMaxBlockArea(Parameters* parameters){
+	return parameters->block_height * parameters->block_width;
+}
+
 int isBlockLocal(int* block, Parameters* parameters){
 	int blocks[2];
-	getIterationBlocks(blocks, parameters);
+	getLocalBlockRange(blocks, parameters);
 
 	int position = positionToBlockIndex(block, parameters);
 	return blocks[0] <= position && position < blocks[1];
 }
+

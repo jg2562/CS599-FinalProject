@@ -37,6 +37,7 @@ void runSimulation(Model* model){
 }
 
 void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
+	model = scatterModel(model);
 	randomSeed(getParameters(model)->seed);
 
 	Parameters* parameters = getParameters(model);
@@ -49,6 +50,7 @@ void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
 		runIterationFunction(model, iterationFunction);
 	}
 	freeSimulationData(data);
+	gatherModel(model);
 }
 
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*)){
@@ -251,36 +253,13 @@ void sendCellsConditions(Iteration* iteration, int* block){
 		for (int col = 0; col < map_dims[0]; col++){
 			int send_count = send_counts[row][col];
 			if (send_count > 0){
-				fillSendConditionArray(send_cells, send_count, map, block, parameters);
-
-				sendCellArrayToBlock(send_cells, send_count, block, parameters);
+				sendBlock(send_cells, send_count, map, block, parameters);
 				send_counts[row][col] = 0;
 			}
 		}
 	}
 
 	freeCellMessage(send_cells);
-}
-
-void fillSendConditionArray(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters){
-	int block_dims[2];
-	getBlockDimensions(block_dims, block, parameters);
-
-	// First cell is used for block into
-	int index = 1;
-	for (int row = 0; row < block_dims[1]; row++){
-		for (int col = 0; col < block_dims[0]; col++){
-			if (index >= send_count){
-				break;
-			}
-			CellMessage message;
-			message.x = col;
-			message.y = row;
-			message.cell = map[row][col];
-			send_cells[index++] = message;
-		}
-	}
-
 }
 
 void receiveAnyCellConditions(Iteration* iteration){
