@@ -5,6 +5,7 @@
 
 #include "parameters.h"
 #include "block.h"
+#include "parallel.h"
 
 void freeSendMatrix(int** matrix, Parameters* parameters);
 int** createSendMatrix(Parameters* parameters);
