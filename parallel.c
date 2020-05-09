@@ -250,13 +250,19 @@ void fillSendCellsArray(CellMessage* send_cells, int send_count, CellMap* map, i
 
 }
 
-void dumpCellArrayToBlock(CellMap* map, CellMessage* receive_cells, int receive_count){
+void dumpCellArrayToBlock(CellMap* map, CellMessage* receive_cells, int* block, int receive_count, Parameters* parameters){
 #if (MPI_ENABLE)
 	// First cell is used for block into
 	CellMessage* message;
-	for (int i = 1; i < receive_count; i++){
-		message = &receive_cells[i];
-		map[message->y][message->x] = message->cell;
+	int origin[2];
+	getBlockOrigin(origin, block, parameters);
+	int x;
+	int y;
+	for (int i = 0; i < receive_count; i++){
+		message = &receive_cells[i+1];
+		x = message->x + origin[0];
+		y = message->y + origin[1];
+		map[y][x] = message->cell;
 	}
 #endif
 }
@@ -275,7 +281,7 @@ void receiveBlock(CellMap* map, CellMessage* receive_cells, Parameters* paramete
 	int block[2];
 	int receive_count;
 	receiveCellArrayAtBlock(receive_cells, &receive_count, block, parameters);
-	dumpCellArrayToBlock(map, receive_cells, receive_count);
+	dumpCellArrayToBlock(map, receive_cells, block, receive_count, parameters);
 }
 
 int blockToRank(int block_index, Parameters* parameters){
