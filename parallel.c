@@ -310,51 +310,38 @@ void createCellDatatype(){
 
 void createCellMessageDatatype(){
 #if (MPI_ENABLE)
-	int cell_message_blocklengths[3] = {1,1,1};
-	MPI_Datatype cell_message_types[3] = {MPI_INT,MPI_INT, mpi_cell_type};
-	MPI_Aint cell_message_offsets[3];
+	int cell_message_blocklengths[2] = {2,1};
+	MPI_Datatype cell_message_types[2] = {MPI_INT,mpi_cell_type};
+	MPI_Aint cell_message_offsets[2];
 	cell_message_offsets[0] = offsetof(CellMessage, x);
-	cell_message_offsets[1] = offsetof(CellMessage, y);
-	cell_message_offsets[2] = offsetof(CellMessage, cell);
+	cell_message_offsets[1] = offsetof(CellMessage, cell);
 
-	MPI_Type_create_struct(3, cell_message_blocklengths, cell_message_offsets, cell_message_types, &mpi_cell_message_type);
+	MPI_Type_create_struct(2, cell_message_blocklengths, cell_message_offsets, cell_message_types, &mpi_cell_message_type);
 	MPI_Type_commit(&mpi_cell_message_type);
 #endif
 }
 
 void createParameterDatatype(){
 #if (MPI_ENABLE)
-	int blocklengths[9] = {1,1,1,1,1,1,1,1,1};
-	MPI_Datatype types[9] = {MPI_DOUBLE, MPI_DOUBLE, MPI_DOUBLE,
-		MPI_INT, MPI_INT, MPI_INT,
-		MPI_INT, MPI_INT, MPI_INT};
-	MPI_Aint offsets[9];
+	int blocklengths[2] = {3,6};
+	MPI_Datatype types[2] = {MPI_DOUBLE, MPI_INT};
+	MPI_Aint offsets[2];
 	offsets[0] = offsetof(Parameters, spread_rate);
-	offsets[1] = offsetof(Parameters, spread_radius);
-	offsets[2] = offsetof(Parameters, recovery_rate);
-	offsets[3] = offsetof(Parameters, model_height);
-	offsets[4] = offsetof(Parameters, model_width);
-	offsets[5] = offsetof(Parameters, block_height);
-	offsets[6] = offsetof(Parameters, block_width);
-	offsets[7] = offsetof(Parameters, seed);
-	offsets[8] = offsetof(Parameters, simulation_iterations);
+	offsets[1] = offsetof(Parameters, model_height);
 
-	MPI_Type_create_struct(9, blocklengths, offsets, types, &mpi_parameters_type);
+	MPI_Type_create_struct(2, blocklengths, offsets, types, &mpi_parameters_type);
 	MPI_Type_commit(&mpi_parameters_type);
 #endif
 }
 
 void createPopulationDatatype(){
 #if (MPI_ENABLE)
-	int blocklengths[4] = {1,1,1,1};
-	MPI_Datatype types[4] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT};
-	MPI_Aint offsets[4];
+	int blocklengths[1] = {4};
+	MPI_Datatype types[1] = {MPI_INT};
+	MPI_Aint offsets[1];
 	offsets[0] = offsetof(Population, susceptible);
-	offsets[1] = offsetof(Population, infected);
-	offsets[2] = offsetof(Population, dead);
-	offsets[3] = offsetof(Population, immune);
 
-	MPI_Type_create_struct(4, blocklengths, offsets, types, &mpi_population_type);
+	MPI_Type_create_struct(1, blocklengths, offsets, types, &mpi_population_type);
 	MPI_Type_commit(&mpi_population_type);
 #endif
 }
