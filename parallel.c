@@ -99,15 +99,22 @@ void scatterCellMap(CellMap** map, Parameters* parameters){
 	CellMessage* message = createCellMessage(parameters);
 	int block_pos[2];
 	int block_range[2];
+	getLocalBlockRange(block_range, parameters);
 	if (isRootRank()){
-		for(int block_index = 0; block_index < getTotalBlocks(parameters); block_index++){
+		//TODO Refactor the double for loop here
+		for(int block_index = 0; block_index < block_range[0]; block_index++){
+			blockIndexToPosition(block_pos, block_index, parameters);
+			int send_count = getBlockArea(block_pos, parameters);
+			sendBlock(message, send_count, *map, block_pos, parameters);
+		}
+
+		for(int block_index = block_range[1]; block_index < getTotalBlocks(parameters); block_index++){
 			blockIndexToPosition(block_pos, block_index, parameters);
 			int send_count = getBlockArea(block_pos, parameters);
 			sendBlock(message, send_count, *map, block_pos, parameters);
 		}
 	} else {
 		*map = createCellMap(parameters->model_width, parameters->model_height);
-		getLocalBlockRange(block_range, parameters);
 		for(int block_index = block_range[0]; block_index < block_range[1]; block_index++){
 			receiveBlock(*map, message, parameters);
 		}
