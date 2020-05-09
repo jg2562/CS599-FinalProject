@@ -233,7 +233,7 @@ void fillSendCellsArray(CellMessage* send_cells, int send_count, CellMap* map, i
 	getBlockDimensions(block_dims, block, parameters);
 
 	// First cell is used for block into
-	int index = 1;
+	int index = 0;
 	for (int row = 0; row < block_dims[1]; row++){
 		for (int col = 0; col < block_dims[0]; col++){
 			if (index >= send_count){
@@ -243,7 +243,8 @@ void fillSendCellsArray(CellMessage* send_cells, int send_count, CellMap* map, i
 			message.x = col;
 			message.y = row;
 			message.cell = map[row][col];
-			send_cells[index++] = message;
+			send_cells[index+1] = message;
+			index++;
 		}
 	}
 
