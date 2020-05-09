@@ -87,6 +87,8 @@ void animateSimulation(const char* parameter_file, const char* map_file){
 	Model* model = loadModel(parameter_file, map_file);
 
 	runSimulationIterator(model, clearAndPrintModel);
+
+	freeModel(model);
 }
 
 void timeSimulation(const char* parameter_file, const char* map_file){
@@ -100,11 +102,12 @@ void timeSimulation(const char* parameter_file, const char* map_file){
 		printf("Simulation time: %.1lfs\n", seconds);
 	}
 
+	freeModel(model);
 }
 
 void testSimulation(const char* parameter_file, const char* map_file){
 
-	displaySimulation(parameter_file, map_file);
+
 
 }
 
