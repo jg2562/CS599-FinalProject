@@ -188,4 +188,5 @@ void freeIteration(Iteration* iteration){
 	int height = getParameters(model)->model_height;
 
 	freeConditionMap(iteration->conditions, height);
+	free(iteration);
 }

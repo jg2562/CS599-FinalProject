@@ -4,12 +4,18 @@
 #include "parameters.h"
 #include "condition.h"
 
-typedef enum Cell{unknown,empty,infected,susceptible,dead,immune,mountain,store} Cell;
+typedef enum CellState{unknown,empty,infected,susceptible,dead,immune,mountain,store} CellState;
+
+typedef struct Cell{
+	CellState state;
+	unsigned int state_start_time;
+} Cell;
 
 Cell charToCell(char c);
 char cellToChar(Cell cell);
 
-Cell createCell();
+Cell createCell(CellState state);
+Cell createDefaultCell();
 Cell randomCell();
 
 int cellHasEffect(Cell* cell);

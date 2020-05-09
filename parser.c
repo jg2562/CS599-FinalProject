@@ -8,12 +8,15 @@
 #include "utils.h"
 #include "cellMap.h"
 #include "model.h"
+#include "linkedList.h"
 
 //function prototypes
 
+LinkedList* readParameters(const char* fname);
 int parseParameter(Parameters* parameter, const char* parameter_name, const char* parameter_value);
 int extractParameterData(char** parameter_name, char** parameter_value, char* parameter_line);
-int parseParameterLine(Parameters* parameter,char* parameter_line);
+int readParameterLine(LinkedList** parsed_list, char* parameter_line);
+void addParameterToList(LinkedList** parsed_list, const char* name, const char* value);
 int parseInt(const char* str_value);
 double parseDouble(const char* str_value);
 
@@ -41,8 +44,20 @@ Model* importModel(const char* parameter_file, const char* map_file){
 }
 
 Parameters* importParameters(const char* fname){
-	const unsigned buffer_size = 4096;
+	LinkedList* unparsed = readParameters(fname);
 
+	if (!unparsed){
+		return NULL;
+	}
+
+	Parameters* parameters = parseParameters(unparsed);
+
+	freeParseList(unparsed);
+	return parameters;
+}
+
+LinkedList* readParameters(const char* fname){
+	const unsigned buffer_size = 4096;
 	FILE *fp = fopen(fname, "r");
 
 	if (!fp) {
@@ -52,30 +67,40 @@ Parameters* importParameters(const char* fname){
 
 	char buffer[buffer_size];
 
-	Parameters* parameters = createParameters();
-
-	int parsed = 1;
-	while (fgets(buffer, buffer_size, fp) && parsed) {
-		parsed = parseParameterLine(parameters, buffer);
+	LinkedList* parse_list = NULL;
+	int read = 1;
+	unsigned int i=0;
+	while (fgets(buffer, buffer_size, fp) && read) {
+		read = readParameterLine(&parse_list, buffer);
+		i++;
 	}
-	parsed &= checkParameters(parameters);
 
 	fclose(fp);
-	if (parsed){
-		return parameters;
-	} else{
-		freeParameters(parameters);
+
+	if (!read){
+		fprintf(stderr,"Failed to read parameter line: %u.\n", i);
+		freeParseList(parse_list);
 		return NULL;
 	}
+
+	return parse_list;
 }
 
- int parseParameterLine(Parameters* parameters, char* parameter_line){
+int readParameterLine(LinkedList** parsed_list, char* parameter_line){
 	char* parameter_name;
 	char* parameter_value;
-	if(extractParameterData(&parameter_name, &parameter_value, parameter_line)){
-		return parseParameter(parameters,parameter_name, parameter_value);
+
+	int extracted = extractParameterData(&parameter_name, &parameter_value, parameter_line);
+
+	if (extracted){
+		addParameterToList(parsed_list,parameter_name, parameter_value);
 	}
-	return 0;
+	return extracted;
+}
+
+void addParameterToList(LinkedList** parsed_list, const char* name, const char* value){
+	ParseParameter* parse = createParseParameter(name, value);
+	*parsed_list = appendToList(*parsed_list, parse);
 }
 
 int extractParameterData(char** parameter_name, char** parameter_value, char* parameter_line){
@@ -89,49 +114,6 @@ int extractParameterData(char** parameter_name, char** parameter_value, char* pa
 	}
 	return 1;
 }
-
-int parseParameter(Parameters* parameter, const char* parameter_name, const char* parameter_value){
-	if (strcmp("spread rate",parameter_name) == 0){
-		parameter->spread_rate = parseDouble(parameter_value);
-
-	} else if(strcmp("spread radius", parameter_name) == 0){
-		parameter->spread_radius = parseDouble(parameter_value);
-
-	} else if(strcmp("recovery rate", parameter_name) == 0){
-		parameter->recovery_rate = parseDouble(parameter_value);
-
-	} else if(strcmp("model height", parameter_name) == 0){
-		parameter->model_height = parseInt(parameter_value);
-
-	} else if(strcmp("model width", parameter_name) == 0){
-		parameter->model_width = parseInt(parameter_value);
-
-	} else if(strcmp("seed", parameter_name) == 0){
-		parameter->seed = parseInt(parameter_value);
-
-	} else if(strcmp("simulation iterations", parameter_name) == 0){
-		parameter->simulation_iterations = parseInt(parameter_value);
-
-	} else {
-		fprintf(stderr,"Unrecognized parameter: %s\n", parameter_name);
-		return 0;
-	}
-	return 1;
-}
-
-double parseDouble(const char* str_value){
-	double val;
-	sscanf(str_value, "%lf", &val);
-	return val;
-}
-
-int parseInt(const char* str_value){
-	int val;
-	sscanf(str_value, "%d", &val);
-	return val;
-}
-
-
 
 CellMap* importCellMap(const char* map_file, int width, int height){
 

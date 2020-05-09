@@ -1,5 +1,6 @@
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
+#include "linkedList.h"
 
 typedef struct Parameters {
 	double spread_rate;
@@ -12,10 +13,18 @@ typedef struct Parameters {
 
 } Parameters;
 
+typedef struct ParseParameter{
+	char* name;
+	char* value;
+} ParseParameter;
 
 Parameters* createParameters();
-int checkParameters(Parameters* parameters);
+Parameters* parseParameters(LinkedList* parameter_list);
 void freeParameters(Parameters* parameters);
 void printParameters(Parameters* parameters);
+
+ParseParameter* createParseParameter(const char* name, const char* value);
+void freeParseParameter(void* parameter);
+void freeParseList(LinkedList* list);
 
 #endif /* PARAMETERS_H */

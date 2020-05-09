@@ -20,33 +20,40 @@ void transmissionEffect(Cell* target, Parameters* parameters, Condition* target_
 void tryInfectCell(Cell* cell, Condition* condition);
 void tryCureCell(Cell* cell, Parameters* condition);
 
-Cell createCell(){
-	return unknown;
+Cell createDefaultCell(){
+	return createCell(unknown);
+}
+
+Cell createCell(CellState state){
+	Cell cell;
+	cell.state = state;
+	cell.state_start_time = 0;
+	return cell;
 }
 
 Cell charToCell(const char c){
 	switch (c){
 	case EMPTY_CHAR:
-		return empty;
+		return createCell(empty);
 	case INFECTED_CHAR:
-		return infected;
+		return createCell(infected);
 	case SUSCEPTIBLE_CHAR:
-		return susceptible;
+		return createCell(susceptible);
 	case DEAD_CHAR:
-		return dead;
+		return createCell(dead);
 	case IMMUNE_CHAR:
-		return immune;
+		return createCell(immune);
 	case MOUNTAIN_CHAR:
-		return mountain;
+		return createCell(mountain);
 	case STORE_CHAR:
-		return store;
+		return createCell(store);
 	default:
-		return unknown;
+		return createCell(unknown);
 	}
 }
 
 char cellToChar(Cell cell){
-	switch(cell){
+	switch(cell.state){
 	case empty:
 		return EMPTY_CHAR;
 	case infected:
@@ -67,9 +74,9 @@ char cellToChar(Cell cell){
 }
 
 Cell randomCell(){
-	char choices[] = {EMPTY_CHAR,INFECTED_CHAR,
-		SUSCEPTIBLE_CHAR,DEAD_CHAR,IMMUNE_CHAR,
-		MOUNTAIN_CHAR,STORE_CHAR,DEFAULT_CHAR};
+	char choices[] = {EMPTY_CHAR, INFECTED_CHAR,
+		SUSCEPTIBLE_CHAR, DEAD_CHAR, IMMUNE_CHAR,
+		MOUNTAIN_CHAR, STORE_CHAR, DEFAULT_CHAR};
 
 	int choice = randomInt(cell_type_count);
 
@@ -78,7 +85,7 @@ Cell randomCell(){
 
 double getEffectRadius(Cell* cell, Parameters* parameters){
 
-	switch(*cell){
+	switch(cell->state){
 	case infected:
 		return parameters->spread_radius;
 	case empty:
@@ -94,7 +101,7 @@ double getEffectRadius(Cell* cell, Parameters* parameters){
 }
 
 int cellHasEffect(Cell* cell){
-	switch(*cell){
+	switch(cell->state){
 	case infected:
 		return 1;
 	default:
@@ -104,7 +111,7 @@ int cellHasEffect(Cell* cell){
 }
 
 void applyCellEffect(Cell* cell, Cell* target, Parameters* parameters, Condition* target_condition){
-	switch(*cell){
+	switch(cell->state){
 	case infected:
 		transmissionEffect(target,parameters,target_condition);
 		break;
@@ -115,13 +122,13 @@ void applyCellEffect(Cell* cell, Cell* target, Parameters* parameters, Condition
 }
 
 void transmissionEffect(Cell* target, Parameters* parameters, Condition* target_condition){
-	if (*target == susceptible){
+	if (target->state == susceptible){
 		target_condition->infection_probabilty += parameters->spread_rate*0.01;
 	}
 }
 
 void applyConditionsToCell(Cell* cell, Parameters* parameters, Condition* condition, unsigned int time_step){
-	switch(*cell){
+	switch(cell->state){
 	case susceptible:
 		tryInfectCell(cell, condition);
 		break;
@@ -137,7 +144,7 @@ void tryInfectCell(Cell* cell, Condition* condition){
 	double infection_probabilty = condition->infection_probabilty;
 	int gotInfected = randomUniformEvent(infection_probabilty);
 	if (gotInfected){
-		*cell = infected;
+		cell->state = infected;
 	}
 }
 
@@ -145,33 +152,33 @@ void tryCureCell(Cell* cell, Parameters* parameters){
 	double recovery_probabilty = parameters->recovery_rate * 0.01;
 	int gotCured = randomUniformEvent(recovery_probabilty);
 	if (gotCured){
-		*cell = immune;
+		cell->state = immune;
 	} else {
 		double death_probabilty = parameters->recovery_rate * 0.01;
 		int gotKilled = randomUniformEvent(death_probabilty);
 		if (gotKilled){
-			*cell = dead;
+			cell->state = dead;
 		}
 	}
 }
 int isSusceptible(Cell* cell){
-	return *cell == susceptible;
+	return cell->state == susceptible;
 }
 
 int isInfected(Cell* cell){
-	return *cell == infected;
+	return cell->state == infected;
 }
 
 int isImmune(Cell* cell){
-	return *cell == immune;
+	return cell->state == immune;
 }
 
 int isDead(Cell* cell){
-	return *cell == dead;
+	return cell->state == dead;
 }
 
 int isCreature(Cell* cell){
-	switch(*cell){
+	switch(cell->state){
 	case infected:
 	case susceptible:
 	case dead:

@@ -1,11 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "randomMap.h"
 #include "simulation.h"
 #include "parser.h"
 #include "model.h"
-#include "time.h"
 
 void testSimulation(const char* parameter_file, const char* map_file);
 void animateSimulation(const char* parameter_file, const char* map_file);
