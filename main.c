@@ -61,6 +61,7 @@ int main(int argc, char** argv){
 void runFullSimulation(const char* parameter_file, const char* map_file){
 	Model* model = loadModel(parameter_file, map_file);
 	runSimulation(model);
+	gatherModel(model);
 	freeModel(model);
 }
 
@@ -74,6 +75,7 @@ void displaySimulation(const char* parameter_file, const char* map_file){
 	}
 
 	runSimulation(model);
+	gatherModel(model);
 
 	if(isRootRank()){
 		printModel(model);
@@ -87,6 +89,7 @@ void animateSimulation(const char* parameter_file, const char* map_file){
 	Model* model = loadModel(parameter_file, map_file);
 
 	runSimulationIterator(model, clearAndPrintModel);
+	gatherModel(model);
 
 	freeModel(model);
 }
@@ -95,6 +98,7 @@ void timeSimulation(const char* parameter_file, const char* map_file){
 	Model* model = loadModel(parameter_file, map_file);
 	time_t simulation_start_time = time(NULL);
 	runSimulation(model);
+	gatherModel(model);
 	time_t simulation_end_time = time(NULL);
 	double seconds = difftime(simulation_end_time, simulation_start_time);
 
@@ -130,24 +134,24 @@ void clearAndPrintModel(Model* model){
 }
 
 Model* loadModel(const char* parameter_file, const char* map_file){
-	Model* model;
-	if (!isRootRank()){
-		return NULL;
+	Model* model = NULL;
+	if (isRootRank()){
+		if (map_file == NULL){
+			model = generateModel(parameter_file);
+		} else {
+			model = importModel(parameter_file, map_file);
+		}
+
+		if (model == NULL){
+			fprintf(stderr, "Failed to import model.\n");
+			parallelEnd();
+			exit(1);
+		}
+
+		pollPopulation(model);
 	}
 
-	if (map_file == NULL){
-		model = generateModel(parameter_file);
-	} else {
-		model = importModel(parameter_file, map_file);
-	}
-
-	if (model == NULL){
-		fprintf(stderr, "Failed to import model.\n");
-		parallelEnd();
-		exit(1);
-	}
-
-	pollPopulation(model);
+	model = scatterAndInitializeModel(model);
 
 	return model;
 }

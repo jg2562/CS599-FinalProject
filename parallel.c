@@ -77,16 +77,20 @@ unsigned int getTotalRanks(){
 	return total_ranks;
 }
 
-Model* scatterModel(Model* model){
-	if (!isRootRank()){
+Model* scatterAndInitializeModel(Model* model){
+	if (model == NULL){
 		model = createModel();
 		model->parameters = createParameters();
 		model->population = createPopulation();
 	}
+	scatterModel(model);
+	return model;
+}
+
+void scatterModel(Model* model){
 	broadcastParameters(model->parameters);
 	scatterCellMap(&model->map, model->parameters);
 	broadcastPopulation(model->population);
-	return model;
 }
 
 void broadcastParameters(Parameters* parameters){
@@ -136,14 +140,9 @@ void getLocalBlockRange(int* blocks, Parameters* parameters){
 	blocks[1] = min(block_per_rank * (getRank()+1), block_count);
 }
 
-Model* gatherModel(Model* model){
+void gatherModel(Model* model){
 	gatherCellMap(model->map, model->parameters);
 	reducePopulation(model->population);
-	if (!isRootRank()){
-		freeModel(model);
-		return NULL;
-	}
-	return model;
 }
 
 void gatherCellMap(CellMap* map, Parameters* parameters){

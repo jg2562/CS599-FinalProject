@@ -28,6 +28,7 @@ void receiveBlock(CellMap* map, CellMessage* receive_cells, Parameters* paramete
 
 void getLocalBlockRange(int* blocks, Parameters* parameters);
 
-Model* gatherModel(Model* model);
-Model* scatterModel(Model* model);
+void gatherModel(Model* model);
+void scatterModel(Model* model);
+Model* scatterAndInitializeModel(Model* model);
 #endif /* PARALLEL_H */

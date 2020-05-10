@@ -37,7 +37,6 @@ void runSimulation(Model* model){
 }
 
 void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
-	model = scatterModel(model);
 	randomSeed(getParameters(model)->seed);
 
 	Parameters* parameters = getParameters(model);
@@ -50,7 +49,6 @@ void runSimulationIterator(Model* model, void(*iterationFunction) (Model*)){
 		runIterationFunction(model, iterationFunction);
 	}
 	freeSimulationData(data);
-	model = gatherModel(model);
 }
 
 void runIterationFunction(Model* model, void(*iterationFunction) (Model*)){
