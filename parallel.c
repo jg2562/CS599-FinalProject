@@ -268,11 +268,12 @@ void dumpCellArrayToBlock(CellMap* map, CellMessage* receive_cells, int* block, 
 	getBlockOrigin(origin, block, parameters);
 	int x;
 	int y;
+	Cell* target;
 	for (int i = 0; i < receive_count; i++){
-		Cell* target = getCell(map, x, y);
 		message = &receive_cells[i+1];
 		x = message->x + origin[0];
 		y = message->y + origin[1];
+		target = getCell(map, x, y);
 		*target = message->cell;
 	}
 #endif
