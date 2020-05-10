@@ -280,8 +280,8 @@ void receiveAnyCellConditions(Iteration* iteration){
 
 void applyCellMessageEffects(Iteration* iteration, CellMessage* message, int count, int* block){
 
-	for (int i = 1; i < count; i++){
-		applyExternalEffect(iteration, &message[i], block);
+	for (int i = 0; i < count; i++){
+		applyExternalEffect(iteration, &message[i+1], block);
 	}
 }
 
