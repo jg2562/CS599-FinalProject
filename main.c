@@ -22,7 +22,7 @@ void usleep(unsigned int);
 int main(int argc, char** argv){
 	parallelBegin(&argc, &argv);
 
-	if (3 > argc || argc > 4){
+	if ((3 > argc || argc > 4) && isRootRank()){
 		fprintf(stderr, "===========================\n");
 		fprintf(stderr, "Error: 3 parameters expected, %d were given.\n", argc);
 		fprintf(stderr, "Proper Usage:\n");
@@ -47,9 +47,11 @@ int main(int argc, char** argv){
 	} else if (strcmp(decision, "test") == 0) {
 		testSimulation(parameter_file, map_file);
 	} else {
-		// Report an invalid flag
-		fprintf(stderr, "Invalid operation mode: %s.\n\n", argv[1]);
-		fprintf(stderr, "Valid operation modes: run, time, animate, display.\n");
+		if (isRootRank()){
+			// Report an invalid flag
+			fprintf(stderr, "Invalid operation mode: %s.\n\n", argv[1]);
+			fprintf(stderr, "Valid operation modes: run, time, animate, display.\n");
+		}
 		parallelEnd();
 		exit(-1);
 	}
