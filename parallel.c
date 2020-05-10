@@ -260,6 +260,35 @@ void fillSendCellsArray(CellMessage* send_cells, int send_count, CellMap* map, i
 
 }
 
+void fillSendCellsArrayFromPositions(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters){
+	int block_dims[2];
+	int origin[2];
+	getBlockDimensions(block_dims, block, parameters);
+	getBlockOrigin(origin, block, parameters);
+
+	// First cell is used for block into
+	int index = 0;
+	for (int row = 0; row < block_dims[1]; row++){
+		for (int col = 0; col < block_dims[0]; col++){
+			if (index >= send_count){
+				break;
+			}
+			CellPosition* redirect = getCellPosition(map, col+origin[0], row+origin[1]);
+			Cell* target = getCell(map, redirect->x, redirect->y);
+			CellMessage message;
+			int x = redirect->x;
+			int y = redirect->y;
+			message.x = x;
+			message.y = y;
+			message.cell = *target;
+			send_cells[index+1] = message;
+			index++;
+		}
+	}
+
+}
+
+
 void dumpCellArrayToBlock(CellMap* map, CellMessage* receive_cells, int* block, int receive_count, Parameters* parameters){
 #if (MPI_ENABLE)
 	// First cell is used for block into
@@ -286,6 +315,13 @@ void sendBlock(CellMessage* send_cells, int send_count, CellMap* map, int* block
 }
 void sendBlockToRank(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters, int to_rank){
 	fillSendCellsArray(send_cells, send_count, map, block, parameters);
+	sendCellArrayToBlock(send_cells, send_count, block, parameters, to_rank);
+}
+
+void sendBlockFromPositions(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters){
+	int block_index = positionToBlockIndex(block, parameters);
+	int to_rank = blockToRank(block_index,parameters);
+	fillSendCellsArrayFromPositions(send_cells, send_count, map, block, parameters);
 	sendCellArrayToBlock(send_cells, send_count, block, parameters, to_rank);
 }
 

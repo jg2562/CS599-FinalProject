@@ -25,6 +25,7 @@ void receiveCellArrayAtBlock(CellMessage* array, int* count, int* block, Paramet
 void dumpCellArrayToBlock(CellMap* map, CellMessage* receive_cells, int* block, int receive_count, Parameters* parameters);
 
 void sendBlock(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters);
+void sendBlockFromPositions(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters);
 void receiveBlock(CellMap* map, CellMessage* receive_cells, Parameters* parameters);
 
 void getLocalBlockRange(int* blocks, Parameters* parameters);
