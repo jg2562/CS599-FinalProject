@@ -248,10 +248,11 @@ void fillSendCellsArray(CellMessage* send_cells, int send_count, CellMap* map, i
 			if (index >= send_count){
 				break;
 			}
+			Cell* target = getCell(map, col+origin[0], row+origin[1]);
 			CellMessage message;
 			message.x = col;
 			message.y = row;
-			message.cell = map[row+origin[1]][col+origin[0]];
+			message.cell = *target;
 			send_cells[index+1] = message;
 			index++;
 		}
@@ -268,10 +269,11 @@ void dumpCellArrayToBlock(CellMap* map, CellMessage* receive_cells, int* block, 
 	int x;
 	int y;
 	for (int i = 0; i < receive_count; i++){
+		Cell* target = getCell(map, x, y);
 		message = &receive_cells[i+1];
 		x = message->x + origin[0];
 		y = message->y + origin[1];
-		map[y][x] = message->cell;
+		*target = message->cell;
 	}
 #endif
 }

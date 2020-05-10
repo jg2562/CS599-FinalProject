@@ -114,7 +114,7 @@ void spreadCellCondition(Iteration* iteration, int position[2]){
 	int max_index[2] = {-1,-1};
 
 	CellMap* map = getCellMap(iteration->model);
-	Cell* cell = &map[y][x];
+	Cell* cell = getCell(map, x, y);
 
 	if (!cellHasEffect(cell)){
 		return;
@@ -209,8 +209,8 @@ void applyEffectLocally(Iteration* iteration, Cell* current, int* block, int min
 
 	for (int row = min_block[1]; row < max_block[1]; row++) {
 		for (int col = min_block[0]; col < max_block[0]; col++) {
-			Cell* target = &map[row][col];
-			Condition* target_conditions = &condition_map[row][col];
+			Cell* target = getCell(map, col, row);
+			Condition* target_conditions = getCondition(condition_map, col, row);
 
 			applyCellEffect(current, target, parameters, target_conditions);
 		}
@@ -235,7 +235,8 @@ void queueCellForBlock(Iteration* iteration, Cell* cell, int* block){
 	col = block_position[0] + local_position[0];
 	row = block_position[1] + local_position[1];
 
-	map[col][row] = *cell;
+	Cell* loc = getCell(map, col, row);
+	*loc = *cell;
 }
 
 
@@ -323,8 +324,8 @@ void simulateBlock(Iteration* iteration, int* block){
 		for (int sub_col = 0; sub_col < block_dimensions[0]; sub_col++) {
 			col = block_origin[0] + sub_col;
 
-			Cell* current = &map[row][col];
-			Condition* condition = &conditions[row][col];
+			Cell* current = getCell(map, col, row);
+			Condition* condition = getCondition(conditions, col, row);
 
 			simulateCell(model, current, condition, time_step);
 		}

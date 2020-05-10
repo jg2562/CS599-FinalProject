@@ -13,6 +13,10 @@ CellMap* createCellMap(int width, int height){
 	return map;
 }
 
+inline Cell* getCell(CellMap* map, int x, int y){
+	return &map[y][x];
+}
+
 void freeCellMap(CellMap* map, int height){
 	for (int i = 0; i < height; i++){
 		free(map[i]);

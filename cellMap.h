@@ -9,6 +9,7 @@
 typedef Cell* CellMap;
 
 
+Cell* getCell(CellMap* map, int x, int y);
 CellMap* createCellMap(int width, int height);
 void freeCellMap(CellMap* map, int height);
 

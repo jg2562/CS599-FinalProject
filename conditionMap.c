@@ -4,6 +4,10 @@
 
 #include "condition.h"
 
+inline Condition* getCondition(ConditionMap* map, int x, int y){
+	return &map[y][x];
+}
+
 ConditionMap* createConditionMap(int width, int height){
 	ConditionMap* map = malloc(sizeof(*map) * height);
 	for (int i = 0; i < height; i++){
