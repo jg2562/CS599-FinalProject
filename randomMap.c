@@ -28,7 +28,8 @@ void fillCellMapRandomly(Parameters* parameters, CellMap* map){
 	for(int i = 0; i < height; i++) {
 		for(int j = 0; j < width; j++) {
 			Cell cell = randomCell();
-			map[i][j] = cell;
+			Cell* loc = getCell(map, j, i);
+			*loc = cell;
 		}
 	}
 }

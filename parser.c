@@ -22,8 +22,8 @@ int parseInt(const char* str_value);
 double parseDouble(const char* str_value);
 
 int readCellMap(CellMap* map, FILE* fp, int width, int height);
-int readCellLine(Cell* cells, FILE* fp, int width);
-int parseCellLine(Cell* cells, char* buffer, int width);
+int readCellLine(CellMapLine* cells, FILE* fp, int width);
+int parseCellLine(CellMapLine* cells, char* buffer, int width);
 
 Model* importModel(const char* parameter_file, const char* map_file){
 	Parameters* parameters = importParameters(parameter_file);
@@ -154,7 +154,7 @@ int readCellMap(CellMap* map, FILE* fp, int width, int height){
 	return parsed;
 }
 
-int readCellLine(Cell* cells, FILE* fp, int width){
+int readCellLine(CellMapLine* cells, FILE* fp, int width){
 	const unsigned buffer_size = 4096;
 
 	char buffer[buffer_size];
@@ -167,17 +167,18 @@ int readCellLine(Cell* cells, FILE* fp, int width){
 	return 0;
 }
 
-int parseCellLine(Cell* cells, char* buffer, int width){
+int parseCellLine(CellMapLine* cells, char* buffer, int width){
 	if (buffer[width] != '\0' && buffer[width] != '\n'){
 		return 0;
 	}
-
+	Cell* cell;
 	for (int i = 0; i < width; i++){
 		if (buffer[i] == '\0'){
 			return 0;
 		}
 
-		cells[i] = charToCell(buffer[i]);
+		cell = getCellFromLine(cells, i);
+		*cell = charToCell(buffer[i]);
 	}
 
 	return 1;

@@ -48,7 +48,7 @@ void pollPopulation(Model* model){
 
 	for (int row = 0; row < height; row++) {
 		for (int col = 0; col < width; col++) {
-			Cell* current = &map[row][col];
+			Cell* current = getCell(map, col, row);
 
 			pollCell(population, current);
 		}
