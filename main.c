@@ -99,11 +99,20 @@ void animateSimulation(const char* parameter_file, const char* map_file){
 }
 
 void timeSimulation(const char* parameter_file, const char* map_file){
+	resetTime();
+
 	Model* model = loadModel(parameter_file, map_file);
+
+	double seconds = lapTime();
+	if(isRootRank()){
+		printf("Setup time: %.3lfs\n", seconds);
+	}
+
 	resetTime();
 	runSimulation(model);
 	gatherModel(model);
-	double seconds = lapTime();
+
+	seconds = lapTime();
 
 	if(isRootRank()){
 		printf("Simulation time: %.3lfs\n", seconds);
