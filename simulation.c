@@ -220,15 +220,17 @@ void applyEffectLocally(Iteration* iteration, Cell* current, int* block, int min
 void queueCellForBlock(Iteration* iteration, Cell* cell, int* block){
 	Parameters* parameters = getParameters(iteration->model);
 	CellMap* map = getCellMap(iteration->model);
-	int** send_count = iteration->send_count;
+	int** send_counts = iteration->send_count;
 
 	int block_position[2];
 	int local_position[2];
 	int row;
 	int col;
+	int* send_count = &send_counts[block[1]][block[0]];
 
 	getBlockOrigin(block_position, block, parameters);
-	localIndexToPosition(local_position, send_count[block[1]][block[0]]++, block, parameters);
+	localIndexToPosition(local_position, *send_count, block, parameters);
+	(*send_count)++;
 
 	col = block_position[0] + local_position[0];
 	row = block_position[1] + local_position[1];
