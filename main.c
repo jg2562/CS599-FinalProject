@@ -100,14 +100,13 @@ void animateSimulation(const char* parameter_file, const char* map_file){
 
 void timeSimulation(const char* parameter_file, const char* map_file){
 	Model* model = loadModel(parameter_file, map_file);
-	time_t simulation_start_time = time(NULL);
+	resetTime();
 	runSimulation(model);
 	gatherModel(model);
-	time_t simulation_end_time = time(NULL);
-	double seconds = difftime(simulation_end_time, simulation_start_time);
+	double seconds = lapTime();
 
 	if(isRootRank()){
-		printf("Simulation time: %.1lfs\n", seconds);
+		printf("Simulation time: %.3lfs\n", seconds);
 	}
 
 	freeModel(model);

@@ -17,7 +17,9 @@ static MPI_Datatype mpi_cell_type;
 static MPI_Datatype mpi_cell_message_type;
 static MPI_Datatype mpi_parameters_type;
 static MPI_Datatype mpi_population_type;
-
+double start_time;
+#else
+time_t start_time;
 #endif
 
 static int total_ranks=1;
@@ -63,6 +65,26 @@ void setupRanks(){
 	MPI_Comm_rank(MPI_COMM_WORLD,&current_rank);
 	MPI_Comm_size(MPI_COMM_WORLD,&total_ranks);
 #endif
+}
+
+void resetTime(){
+#if (MPI_ENABLE)
+	start_time = MPI_Wtime();
+#else
+	start_time = time(NULL);
+#endif
+}
+
+double lapTime(){
+	double diff;
+#if (MPI_ENABLE)
+	double end_time = MPI_Wtime();
+	diff = end_time - start_time;
+#else
+	time_t end_time = time(NULL);
+	diff = difftime(end_time, start_time);
+#endif
+	return diff;
 }
 
 int isRootRank(){

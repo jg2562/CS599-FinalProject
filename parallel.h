@@ -13,6 +13,9 @@ typedef struct CellMessage{
 void parallelBegin(int* argc, char*** argv);
 void parallelEnd();
 
+void resetTime();
+double lapTime();
+
 CellMessage* createCellMessage(Parameters* parameters);
 void freeCellMessage(CellMessage* message);
 int isRootRank();
