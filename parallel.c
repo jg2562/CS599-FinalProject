@@ -363,6 +363,10 @@ void createPopulationDatatype(){
 #endif
 }
 
+int validParallelParameters(Parameters* parameters){
+	return (int) getTotalRanks() <= getTotalBlocks(parameters);
+}
+
 CellMessage* createCellMessage(Parameters* parameters){
 	CellMessage* message = malloc(sizeof(*message) * (getMaxBlockArea(parameters)+1));
 	return message;

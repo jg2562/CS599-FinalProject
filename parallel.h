@@ -17,6 +17,7 @@ CellMessage* createCellMessage(Parameters* parameters);
 void freeCellMessage(CellMessage* message);
 int isRootRank();
 
+int validParallelParameters(Parameters* parameters);
 void synchronize();
 int hasMessages();
 void fillSendCellsArray(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters);

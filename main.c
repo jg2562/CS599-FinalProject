@@ -165,6 +165,10 @@ Model* generateModel(const char* parameter_file){
 	if (parameters == NULL){
 		fprintf(stderr, "Failed to import parameters.\n");
 		return NULL;
+	} else if(!validParallelParameters(parameters)){
+		fprintf(stderr, "Invalid model parameters for specified parallel parameters.\n");
+		freeParameters(parameters);
+		return NULL;
 	}
 
 	CellMap* map = generateRandomMap(parameters);

@@ -9,6 +9,7 @@
 #include "cellMap.h"
 #include "model.h"
 #include "linkedList.h"
+#include "parallel.h"
 
 //function prototypes
 
@@ -28,6 +29,10 @@ Model* importModel(const char* parameter_file, const char* map_file){
 	Parameters* parameters = importParameters(parameter_file);
 	if (parameters == NULL){
 		fprintf(stderr, "Failed to import parameters.\n");
+		return NULL;
+	} else if(!validParallelParameters(parameters)){
+		fprintf(stderr, "Invalid model parameters for specified parallel parameters.\n");
+		freeParameters(parameters);
 		return NULL;
 	}
 
