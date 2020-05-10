@@ -22,8 +22,8 @@ void getEffectBox(int* min_index,int* max_index, Cell* cell, int* position, Para
 void getBounds(int min_index[2], int max_index[2], double radius, int position[2], int size[2]);
 void getBlockBounds(int min_index[2], int max_index[2], int* block, Parameters* parameters);
 void applyEffectLocally(Iteration* iteration, Cell* current, int* block, int min_index[2], int max_index[2]);
-void applyEffectGlobally(Iteration* iteration, int* block, Cell* current, int min_index[2], int max_index[2]);
-void spreadCellCondition(Iteration* iteration, int* block, int position[2]);
+void applyEffectGlobally(Iteration* iteration, Cell* current, int min_index[2], int max_index[2]);
+void spreadCellCondition(Iteration* iteration, int position[2]);
 void fillSendConditionArray(CellMessage* send_cells, int send_count, CellMap* map, int* block, Parameters* parameters);
 void getCellsConditions(Iteration* iteration);
 void getCellBlockConditions(Iteration* iteration, int* block);
@@ -97,14 +97,14 @@ void getCellBlockConditions(Iteration* iteration, int* block){
 		for (int col = 0; col < block_dimensions[0]; col++) {
 			position[0] = block_origin[0] + col;
 
-			spreadCellCondition(iteration, block, position);
+			spreadCellCondition(iteration, position);
 		}
 	}
 	sendCellsConditions(iteration, block);
 	receiveAnyCellConditions(iteration);
 }
 
-void spreadCellCondition(Iteration* iteration, int* block, int position[2]){
+void spreadCellCondition(Iteration* iteration, int position[2]){
 	int x = position[0];
 	int y = position[1];
 
@@ -122,7 +122,7 @@ void spreadCellCondition(Iteration* iteration, int* block, int position[2]){
 
 	getEffectBox(min_index, max_index, cell, position, parameters);
 
-	applyEffectGlobally(iteration, block, cell, min_index, max_index);
+	applyEffectGlobally(iteration, cell, min_index, max_index);
 }
 
 void getEffectBox(int* min_index,int* max_index, Cell* cell, int* position, Parameters* parameters){
@@ -152,7 +152,7 @@ void getBlockBounds(int min_index[2], int max_index[2], int* block, Parameters* 
 	boundBox(min_index,max_index,origin,terminus);
 }
 
-void applyEffectGlobally(Iteration* iteration, int* block, Cell* cell, int min_index[2], int max_index[2]){
+void applyEffectGlobally(Iteration* iteration, Cell* cell, int min_index[2], int max_index[2]){
 	Parameters* parameters = getParameters(iteration->model);
 	int min_block[2];
 	int max_block[2];
@@ -167,10 +167,9 @@ void applyEffectGlobally(Iteration* iteration, int* block, Cell* cell, int min_i
 		for (int block_col = min_block[0]; block_col <= max_block[0]; block_col++){
 			to_block[0] = block_col;
 			to_block[1] = block_row;
-			if (isBlockLocal(block, parameters)){
+			if (isBlockLocal(to_block, parameters)){
 				applyEffectLocally(iteration, cell, to_block, min_index, max_index);
 			} else {
-
 				queueCellForBlock(iteration, cell, to_block);
 			}
 		}
