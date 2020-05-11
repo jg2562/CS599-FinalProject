@@ -20,6 +20,12 @@ int validateIntGreaterOrEqualToZero(void* value);
 
 Parameters* createParameters(){
 	Parameters* parameters = malloc(sizeof(*parameters));
+
+	if (parameters == NULL){
+		fprintf(stderr, "Failed to allocate new parameters.\n");
+		exit(1);
+	}
+
 	parameters->spread_rate = -1;
 	parameters->spread_radius = -1;
 	parameters->recovery_rate = -1;
@@ -135,6 +141,12 @@ void printParameters(Parameters* parameters){
 
 ParseParameter* createEmptyParseParameter(){
 	ParseParameter* parsed = malloc(sizeof(*parsed));
+
+	if (parsed == NULL){
+		fprintf(stderr, "Failed to allocate new parsed.\n");
+		exit(1);
+	}
+
 	parsed->name = NULL;
 	parsed->value = NULL;
 	return parsed;

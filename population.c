@@ -4,6 +4,12 @@
 
 Population* createPopulation(){
 	Population* population = malloc(sizeof(*population));
+
+	if (population == NULL){
+		fprintf(stderr, "Failed to allocate new population.\n");
+		exit(1);
+	}
+
 	population->susceptible = -1;
 	population->infected = -1;
 	population->dead = -1;

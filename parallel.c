@@ -430,6 +430,13 @@ int validParallelParameters(Parameters* parameters){
 
 CellMessage* createCellMessage(Parameters* parameters){
 	CellMessage* message = malloc(sizeof(*message) * (getMaxBlockArea(parameters)+1));
+
+	if (message == NULL){
+		fprintf(stderr, "Failed to allocate new cell message.\n");
+		parallelEnd();
+		exit(1);
+	}
+
 	return message;
 }
 

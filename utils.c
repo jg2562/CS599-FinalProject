@@ -1,5 +1,6 @@
 #include "utils.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 
@@ -30,6 +31,12 @@ char* duplicateString(const char* str){
 
 	unsigned int len = strlen(str);
 	char* copy = malloc(sizeof(*copy) * len+1);
+
+	if (copy == NULL){
+		fprintf(stderr, "Failed to allocate new string.\n");
+		exit(1);
+	}
+
 	copy[len] = '\0';
 	strcpy(copy, str);
 	return copy;

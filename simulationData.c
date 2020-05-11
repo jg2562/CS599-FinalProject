@@ -17,6 +17,12 @@ SimulationData* createSimulationData(Model* model){
 
 	SimulationData* data = malloc(sizeof(*data));
 
+	if (data == NULL){
+		fprintf(stderr, "Failed to allocate new simulation data.\n");
+		parallelEnd();
+		exit(1);
+	}
+
 	Parameters* parameters = getParameters(model);
 
 	int width = parameters->model_width;
@@ -36,8 +42,22 @@ int** createSendMatrix(Parameters* parameters){
 	getMapDimensionsInBlocks(dimensions, parameters);
 
 	int** matrix = malloc(sizeof(*matrix) * dimensions[1]);
+
+	if (matrix == NULL){
+		fprintf(stderr, "Failed to allocate new send count matrix.\n");
+		parallelEnd();
+		exit(1);
+	}
+
 	for (int i = 0; i < dimensions[1]; i++){
 		matrix[i] = malloc(sizeof(**matrix) * dimensions[0]);
+
+		if (matrix[i] == NULL){
+			fprintf(stderr, "Failed to allocate new send count matrix.\n");
+			parallelEnd();
+			exit(1);
+		}
+
 		for (int j = 0; j < dimensions[0]; j++){
 			matrix[i][j] = 0;
 		}
@@ -71,6 +91,12 @@ Iteration* createIteration(SimulationData* data, unsigned int time_step){
 	}
 
 	Iteration* iteration = malloc(sizeof(*iteration));
+
+	if (iteration == NULL){
+		fprintf(stderr, "Failed to allocate new iteration.\n");
+		parallelEnd();
+		exit(1);
+	}
 
 	iteration->model = data->model;
 	iteration->time_step = time_step;

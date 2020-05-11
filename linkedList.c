@@ -127,6 +127,11 @@ ListNode* createNode(void* data) {
 ListNode* createBlankNode() {
 	LinkedList* node = malloc(sizeof(*node));
 
+	if (node == NULL){
+		fprintf(stderr, "Failed to allocate new link list node.\n");
+		exit(1);
+	}
+
 	node->value = NULL;
 	node->next = NULL;
 

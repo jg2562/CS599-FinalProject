@@ -1,5 +1,6 @@
 #include "queue.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 void enqueue(Queue* queue, void* value){
 	queue->head = appendToList(queue->head, value);
@@ -26,11 +27,17 @@ void* dequeue(Queue* queue){
 	return value;
 }
 
-Queue *createQueue() {
-  Queue *queue = malloc(sizeof(*queue));
-  queue->head = NULL;
-  queue->tail = NULL;
-  return queue;
+Queue* createQueue() {
+	Queue* queue = malloc(sizeof(*queue));
+
+	if (queue == NULL){
+		fprintf(stderr, "Failed to allocate new queue.\n");
+		exit(1);
+	}
+
+	queue->head = NULL;
+	queue->tail = NULL;
+	return queue;
 }
 
 void freeQueue(Queue* queue, void freeData(void* data)){

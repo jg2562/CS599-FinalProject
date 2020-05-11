@@ -7,6 +7,12 @@
 
 Model* createModel(){
 	Model* model = malloc(sizeof(*model));
+
+	if (model == NULL){
+		fprintf(stderr, "Failed to allocate new model.\n");
+		exit(1);
+	}
+
 	model->map = NULL;
 	model->parameters = NULL;
 	model->population = createPopulation();

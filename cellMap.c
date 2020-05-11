@@ -4,8 +4,20 @@
 
 CellMap* createCellMap(int width, int height){
 	CellMap* map = malloc(sizeof(*map) * height);
+
+	if (map == NULL){
+		fprintf(stderr, "Failed to allocate new cell map.\n");
+		exit(1);
+	}
+
 	for (int i = 0; i < height; i++){
 		map[i] = malloc(sizeof(**map) * width);
+
+		if (map[i] == NULL){
+			fprintf(stderr, "Failed to allocate new cell map.\n");
+			exit(1);
+		}
+
 		for (int j = 0; j < width; j++){
 			map[i][j].cell = createDefaultCell();
 		}
